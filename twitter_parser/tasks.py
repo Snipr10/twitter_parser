@@ -65,7 +65,10 @@ def start_parsing_by_keyword(special_group=False):
                     print("search_by_key")
 
                     res_tw, res_us = search_by_key(account.login, account.password,account.email, account.email_password, proxy, key_word.keyword)
-                    save_d(res_tw, res_us)
+                    if res_tw is not None:
+                        key_word.last_modified = update_time_timezone(timezone.localtime())
+                        key_word.save(update_fields=["last_modified"])
+                        save_d(res_tw, res_us)
                 else:
                     raise Exception("can not get_data")
             finally:

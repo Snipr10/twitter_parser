@@ -59,8 +59,8 @@ class MySearch(Search):
 
 
 def search_by_key(username, password, email, email_password, proxy_url, key_word):
-    res_tw = []
-    res_us = []
+    res_tw = None
+    res_us = None
     try:
         # email, username, password = "kemullinax70@hotmail.com", "queleraren39157", "2SmyGTeoRm"
         # proxy_url = "http://tools-admin_metamap_com:456f634698@193.142.249.56:30001"
@@ -75,7 +75,8 @@ def search_by_key(username, password, email, email_password, proxy_url, key_word
                 latest=True,  # get latest tweets only
                 retries=1,
             )
-
+        res_tw = []
+        res_us = []
         for r in latest_results[0]:
             try:
                 res_tw.extend((r.get('globalObjects') or {}).get("tweets").values() or [])
