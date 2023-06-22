@@ -62,10 +62,10 @@ def search_by_key(username, password, email, email_password, proxy_url, key_word
     res_tw = []
     res_us = []
     try:
-        email, username, password = "kemullinax70@hotmail.com", "queleraren39157", "2SmyGTeoRm"
-        proxy_url = "http://tools-admin_metamap_com:456f634698@193.142.249.56:30001"
-        email_password = 'Kerrie19701970'
-        email = 'kemullinax70@hotmail.com'
+        # email, username, password = "kemullinax70@hotmail.com", "queleraren39157", "2SmyGTeoRm"
+        # proxy_url = "http://tools-admin_metamap_com:456f634698@193.142.249.56:30001"
+        # email_password = 'Kerrie19701970'
+        # email = 'kemullinax70@hotmail.com'
 
         search = MySearch(email, username, password, debug=True, proxy_url=proxy_url,
                           protonmail={'email': email, 'password': email_password})
