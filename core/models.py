@@ -11,8 +11,8 @@ class Account(models.Model):
     email_password = models.CharField(default='', max_length=200)
     taken = models.BooleanField(default=False)
     is_active = models.IntegerField(default=0)
-    start_parsing = models.DateTimeField(null=True, blank=True)
-    last_parsing = models.DateTimeField(null=True, blank=True)
+    start_parsing = models.DateTimeField(default=now)
+    last_parsing = models.DateTimeField(default=now)
     proxy_id = models.CharField(max_length=256)
 
     class Meta:

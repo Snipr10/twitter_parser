@@ -11,11 +11,12 @@ def get_session():
     account = models.Account.objects.filter(Q(last_parsing__isnull=True) | Q(last_parsing__lte=update_time_timezone(
             timezone.localtime()) - timedelta(minutes=15)), taken=False, is_active__lte=10, proxy_id__isnull=False
                                        ).order_by('last_parsing').first()
-
+    print(f"account {account}")
     if account is None:
         return None, None
     try:
         account.taken = True
+        print(update_time_timezone(timezone.now()))
         account.start_parsing = update_time_timezone(timezone.now())
         account.last_parsing = update_time_timezone(timezone.now())
         account.save()
