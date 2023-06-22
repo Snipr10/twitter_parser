@@ -58,8 +58,11 @@ def start_parsing_by_keyword(special_group=False):
             key_word.taken = 1
             key_word.save()
             try:
+                print("get_session")
                 account, proxy = get_session()
                 if account:
+                    print("search_by_key")
+
                     res_tw, res_us = search_by_key(account.login, account.password,account.email, account.email_password, proxy, key_word)
                 else:
                     raise Exception("can not get_data")
