@@ -55,7 +55,6 @@ def update_token(client: Client, key: str, url: str, **kwargs) -> Client:
         client.headers.update(headers)
         r = client.post(url, **kwargs)
         info = r.json()
-
         for task in info.get('subtasks', []):
             if task.get('enter_text', {}).get("header", {}).get("primary_text", {}).get("text", "") == 'Check your email':
                 print(f"[{YELLOW}warning{RESET}] {' '.join(find_key(task, 'text'))}")
@@ -163,6 +162,9 @@ def get_email_message(username, password):
                 print("=" * 100)
         if "Please enter this verification code to get started on Twitter" in str(body):
             res = re.findall(r'\d{6}', str(body))[0]
+            break
+        elif "We noticed an attempt to log in to" in str(body):
+            res = re.findall(r'(?<=code.\\r\\n\\r\\n)(.+?)(?=\\r\\n\\r\\nIf this wasn’)', str(body))[0]
             break
     # close the connection and logout
     imap.close()
