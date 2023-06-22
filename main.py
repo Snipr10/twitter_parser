@@ -85,7 +85,7 @@ if __name__ == '__main__':
 
     futures = []
 
-    from twitter_parser.tasks import start_parsing_by_keyword, start_parsing_account_source
+    from twitter_parser.tasks import start_parsing_by_keyword
 
     #
     # for i in range(1):
