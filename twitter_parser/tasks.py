@@ -57,8 +57,9 @@ def start_parsing_by_keyword(special_group=False):
                                    update_time_timezone(timezone.localtime())):
             print("key_word")
             django.db.close_old_connections()
-            key_word.taken = 1
-            key_word.save(update_fields=["taken"])
+            models.Keyword.objects.raw(f"UPDATE `prsr_parser_keywords` SET `taken` = '1' WHERE `prsr_parser_keywords`.`id` = {key_word.id}")
+            # key_word.taken = 1
+            # key_word.save(update_fields=["taken"])
             try:
                 print("get_session")
                 account, proxy = get_session()
