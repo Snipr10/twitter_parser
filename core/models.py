@@ -196,26 +196,26 @@ class AllProxy(models.Model):
 #         db_table = 'prsr_parser_fb_users_friends'
 #
 #
-# class Sources(models.Model):
-#     uid = models.IntegerField(default=0)
-#     published = models.IntegerField(default=1)
-#     status = models.BooleanField(default=0)
-#     type = models.CharField(default="profiles", max_length=4096)
-#     retro = models.DateField(null=True, blank=True)
-#     retro_max = models.DateField(null=True, blank=True)
-#     networks = models.IntegerField(default=0)
-#     last_modify = models.DateTimeField(null=True, blank=True)
-#     links_modify = models.DateTimeField(null=True, blank=True)
-#     n2_modify = models.DateTimeField(null=True, blank=True)
-#     taken = models.BooleanField(default=1)
-#     linking = models.BooleanField(default=0)
-#     sources = models.IntegerField(default=15)
-#     profiles = models.IntegerField(default=15)
-#     stats_params = models.CharField(null=True, blank=True, max_length=4096)
-#
-#     class Meta:
-#         db_table = 'prsr_parser_sources'
-#
+class Sources(models.Model):
+    uid = models.IntegerField(default=0)
+    published = models.IntegerField(default=1)
+    status = models.BooleanField(default=0)
+    type = models.CharField(default="profiles", max_length=4096)
+    retro = models.DateField(null=True, blank=True)
+    retro_max = models.DateField(null=True, blank=True)
+    networks = models.IntegerField(default=0)
+    last_modify = models.DateTimeField(null=True, blank=True)
+    links_modify = models.DateTimeField(null=True, blank=True)
+    n2_modify = models.DateTimeField(null=True, blank=True)
+    taken = models.BooleanField(default=1)
+    linking = models.BooleanField(default=0)
+    sources = models.IntegerField(default=15)
+    profiles = models.IntegerField(default=15)
+    stats_params = models.CharField(null=True, blank=True, max_length=4096)
+
+    class Meta:
+        db_table = 'prsr_parser_sources'
+
 #
 # class SourcesSpecial(models.Model):
 #     source_id = models.IntegerField()
@@ -226,21 +226,21 @@ class AllProxy(models.Model):
 #         db_table = 'prsr_parser_source_special'
 #
 #
-# class SourcesItems(models.Model):
-#     source_id = models.IntegerField()
-#     network_id = models.IntegerField(default=0)
-#     type = models.IntegerField(default=1)
-#     data = models.CharField(default='', max_length=4096)
-#     last_modified = models.DateTimeField(null=True, blank=True)
-#     reindexed = models.DateTimeField(null=True, blank=True)
-#     taken = models.BooleanField(default=0)
-#     reindexing = models.BooleanField(default=0)
-#     disabled = models.BooleanField(default=0)
-#     forced = models.BooleanField(default=0)
-#
-#     class Meta:
-#         db_table = 'prsr_parser_source_items'
-#
+class SourcesItems(models.Model):
+    source_id = models.IntegerField()
+    network_id = models.IntegerField(default=0)
+    type = models.IntegerField(default=1)
+    data = models.CharField(default='', max_length=4096)
+    last_modified = models.DateTimeField(null=True, blank=True)
+    reindexed = models.DateTimeField(null=True, blank=True)
+    taken = models.BooleanField(default=0)
+    reindexing = models.BooleanField(default=0)
+    disabled = models.BooleanField(default=0)
+    forced = models.BooleanField(default=0)
+
+    class Meta:
+        db_table = 'prsr_parser_source_items'
+
 #
 # class SourcesAccountsItems(models.Model):
 #     source_id = models.IntegerField()
@@ -250,31 +250,31 @@ class AllProxy(models.Model):
 #         db_table = 'prsr_parser_fb_account_source'
 #
 #
-# class Keyword(models.Model):
-#     id = models.IntegerField(primary_key=True)
-#     network_id = models.IntegerField(default=0)
-#     keyword = models.CharField(default='', max_length=4096)
-#     enabled = models.IntegerField(default=0)
-#     created_date = models.DateTimeField(null=True, blank=True)
-#     modified_date = models.DateTimeField(null=True, blank=True)
-#     depth = models.DateField(null=True, blank=True)
-#     last_modified = models.DateTimeField(null=True, blank=True)
-#     taken = models.BooleanField(default=0)
-#     reindexing = models.BooleanField(default=0)
-#     forced = models.BooleanField(default=0)
+class Keyword(models.Model):
+    id = models.IntegerField(primary_key=True)
+    network_id = models.IntegerField(default=0)
+    keyword = models.CharField(default='', max_length=4096)
+    enabled = models.IntegerField(default=0)
+    created_date = models.DateTimeField(null=True, blank=True)
+    modified_date = models.DateTimeField(null=True, blank=True)
+    depth = models.DateField(null=True, blank=True)
+    last_modified = models.DateTimeField(null=True, blank=True)
+    taken = models.BooleanField(default=0)
+    reindexing = models.BooleanField(default=0)
+    forced = models.BooleanField(default=0)
+
+    class Meta:
+        db_table = 'prsr_parser_keywords'
 #
-#     class Meta:
-#         db_table = 'prsr_parser_keywords'
-#
-#
-# class KeywordSource(models.Model):
-#     keyword_id = models.IntegerField(primary_key=True)
-#     source_id = models.IntegerField()
-#
-#     class Meta:
-#         db_table = 'prsr_parser_source_keywords'
-#
-#
+
+class KeywordSource(models.Model):
+    keyword_id = models.IntegerField(primary_key=True)
+    source_id = models.IntegerField()
+
+    class Meta:
+        db_table = 'prsr_parser_source_keywords'
+
+
 # class Account(models.Model):
 #     login = models.CharField(default='', max_length=200)
 #     password = models.CharField(default='', max_length=200)
