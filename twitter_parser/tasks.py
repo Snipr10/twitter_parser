@@ -15,6 +15,7 @@ from core import models
 
 from twitter_parser.settings import network_id, BEST_PROXY_KEY
 from twitter_parser.twitter_utils.parse_by_key import search_by_key
+from twitter_parser.twitter_utils.saver import save_d
 from twitter_parser.twitter_utils.session import get_session
 from twitter_parser.utils.find_data import update_time_timezone
 from twitter_parser.utils.proxy import generate_proxy_session, check_facebook_url
@@ -64,6 +65,7 @@ def start_parsing_by_keyword(special_group=False):
                     print("search_by_key")
 
                     res_tw, res_us = search_by_key(account.login, account.password,account.email, account.email_password, proxy, key_word)
+                    save_d(res_tw, res_us)
                 else:
                     raise Exception("can not get_data")
             finally:

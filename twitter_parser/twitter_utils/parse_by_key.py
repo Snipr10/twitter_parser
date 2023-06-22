@@ -84,5 +84,4 @@ def search_by_key(username, password, email, email_password, proxy_url, key_word
                 pass
     except Exception as e:
         print(e)
-    print(latest_results)
     return res_tw, res_us

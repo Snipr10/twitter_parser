@@ -41,30 +41,49 @@ class AllProxy(models.Model):
     class Meta:
         db_table = 'prsr_parser_proxy'
 
+class Post(models.Model):
+    id = models.IntegerField(primary_key=True)
+    from_id = models.IntegerField(null=True, blank=True)
+    owner_sphinx_id = models.CharField(max_length=256)
+    content = models.TextField(default="", null=True, blank=True)
+    repost_of = models.IntegerField(default=0, null=True, blank=True)
+    created_date = models.DateTimeField(null=True, blank=True)
+    viewed = models.IntegerField(default=0, null=True, blank=True)
+    comments = models.IntegerField(default=0, null=True, blank=True)
+    reposts = models.IntegerField(default=0, null=True, blank=True)
+    likes = models.IntegerField(default=0, null=True, blank=True)
+    trust = models.IntegerField(null=True, blank=True)
+    comment_of = models.IntegerField(default=0, null=True, blank=True)
+    comment_to = models.IntegerField(default=0, null=True, blank=True)
+    sphinx_id = models.IntegerField(null=True, blank=True)
+    found_date = models.DateField(auto_now_add=True)
+    last_modified = models.DateTimeField(default=now)
+    content_hash = models.CharField(max_length=32, null=True, blank=True)
+    group_id = models.CharField(default="", max_length=255)
+
+    class Meta:
+        db_table = 'prsr_parser_tw_posts'
+
+
+class User(models.Model):
+    id = models.IntegerField(primary_key=True)
+    sphinx_id = models.IntegerField(default=0)
+    name = models.CharField(max_length=255)
+    screen_name = models.CharField(max_length=255)
+    url = models.CharField(default="", max_length=255, null=True, blank=True)
+    followers = models.IntegerField(default=0, null=True, blank=True)
+    district = models.IntegerField(default=0, null=True, blank=True)
+    friends	= models.IntegerField(default=0, null=True, blank=True)
+    groups = models.IntegerField(default=0, null=True, blank=True)
+    created_date = models.DateTimeField(null=True, blank=True)
+    logo = models.CharField(max_length=255)
+    last_modify = models.DateTimeField(default=now)
+    found_date = models.DateField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'prsr_parser_tw_users'
 #
-#
-# class Post(models.Model):
-#     id = models.IntegerField(primary_key=True)
-#     user_id = models.IntegerField(null=True, blank=True)
-#     group_id = models.IntegerField()
-#     found_date = models.DateField(auto_now_add=True)
-#     repost_from = models.IntegerField(null=True, blank=True)
-#     created_date = models.DateTimeField(null=True, blank=True)
-#     likes_count = models.IntegerField(default=0, null=True, blank=True)
-#     comments_count = models.IntegerField(default=0, null=True, blank=True)
-#     repost_count = models.IntegerField(default=-1, null=True, blank=True)
-#     # repost_count = models.IntegerField(default=0, null=True, blank=True)
-#
-#     trust = models.IntegerField(null=True, blank=True)
-#     sphinx_id = models.IntegerField(null=True, blank=True)
-#     updated = models.DateField(null=True, blank=True)
-#     last_modified = models.DateTimeField(default=now)
-#     content_hash = models.CharField(max_length=32, null=True, blank=True)
-#     taken = models.IntegerField(default=0)
-#     url = models.CharField(max_length=255, null=True, blank=True)
-#
-#     class Meta:
-#         db_table = 'prsr_parser_fb_posts'
+
 #
 #
 # class PostContent(models.Model):
@@ -75,23 +94,7 @@ class AllProxy(models.Model):
 #         db_table = 'prsr_parser_fb_posts_content'
 #
 #
-# class User(models.Model):
-#     id = models.IntegerField(primary_key=True)
-#     sphinx_id = models.IntegerField(default=0)
-#     screen_name = models.CharField(max_length=255)
-#     logo = models.CharField(max_length=255)
-#     url = models.CharField(max_length=255, null=True, blank=True)
-#     name = models.CharField(max_length=255)
-#     sex = models.IntegerField(default=0)
-#     bdate = models.DateField(null=True, blank=True)
-#     followers = models.IntegerField(default=0, null=True, blank=True)
-#     last_modify = models.DateTimeField()
-#     username = models.CharField(max_length=255)
-#     last_modified = models.DateTimeField(default=now)
-#
-#     class Meta:
-#         db_table = 'prsr_parser_fb_users'
-#
+
 #
 # class UserExt(models.Model):
 #     id = models.IntegerField(primary_key=True)
