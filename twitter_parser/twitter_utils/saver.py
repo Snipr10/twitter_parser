@@ -13,7 +13,7 @@ def get_md5_text(text):
 
 def get_sphinx_id(url):
     m = hashlib.md5()
-    m.update(url.encode())
+    m.update(str(url).encode())
     return int(str(int(m.hexdigest(), 16))[:16])
 
 def save_d(res_tw, res_us):
