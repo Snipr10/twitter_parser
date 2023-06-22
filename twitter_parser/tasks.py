@@ -49,10 +49,12 @@ def start_parsing_by_keyword(special_group=False):
         select_source = select_sources.get(id=key_source.filter(keyword_id=key_word.id).first().source_id)
         last_update = key_word.last_modified
         time_ = select_source.sources
+        print("time")
         print(time_)
 
         if last_update is None or (last_update + datetime.timedelta(minutes=time_) <
                                    update_time_timezone(timezone.localtime())):
+            print("key_word")
             key_word.taken = 1
             key_word.save()
             try:
