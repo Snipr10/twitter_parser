@@ -23,6 +23,7 @@ logger = logging.getLogger(__file__)
 
 
 def start_parsing_by_keyword(special_group=False):
+    print("start_parsing_by_keyword")
     django.db.close_old_connections()
 
     select_sources = models.Sources.objects.filter(

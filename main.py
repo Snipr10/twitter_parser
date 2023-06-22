@@ -103,6 +103,6 @@ if __name__ == '__main__':
     for i in range(2):
         time.sleep(10)
         print("thread new_process_key " + str(i))
-        x = threading.Thread(target=new_process_key, args=(i, False,))
+        x = threading.Thread(target=new_process_key, args=(i, ))
         x.start()
 
