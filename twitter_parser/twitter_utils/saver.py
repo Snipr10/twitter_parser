@@ -25,7 +25,7 @@ def save_d(res_tw, res_us):
                     sphinx_id=get_sphinx_id(us.get("id")),
                     name=us.get("name"),
                     screen_name=us.get("screen_name"),
-                    url=us.get("url"),
+                    url=us.get("url") or "",
                     followers=us.get("followers_count"),
                     district=0,
                     friends=us.get("friends_count") or 0,
