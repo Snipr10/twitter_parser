@@ -9,8 +9,6 @@ import os
 
 import random
 
-from twitter_parser.twitter_utils.parse_by_key import search_by_key
-
 BOT = None
 
 Task = []
@@ -86,6 +84,9 @@ if __name__ == '__main__':
     django.setup()
 
     futures = []
+
+    from twitter_parser.tasks import start_parsing_by_keyword
+
     #
     # x = threading.Thread(target=update_, args=(0,))
     # x.start()
