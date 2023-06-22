@@ -90,9 +90,7 @@ if __name__ == '__main__':
     # x = threading.Thread(target=update_, args=(0,))
     # x.start()
     from twitter_parser.tasks import start_parsing_by_keyword, start_parsing_by_source, start_parsing_account_source
-    from twitter_parser.utils.find_data import update_time_timezone
-    import datetime
-    from twitter_parser.settings import network_id
+
 
     # start_parsing_by_source_while(False)
     x = threading.Thread(target=new_process_account_item, args=(0, ))
