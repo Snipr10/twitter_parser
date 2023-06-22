@@ -57,7 +57,7 @@ def start_parsing_by_keyword(special_group=False):
                                    update_time_timezone(timezone.localtime())):
             print("key_word")
             key_word.taken = 1
-            key_word.save()
+            key_word.save(update_fields=["taken"])
             try:
                 print("get_session")
                 account, proxy = get_session()
@@ -73,8 +73,8 @@ def start_parsing_by_keyword(special_group=False):
                 key_word.taken = 0
                 key_word.save(update_fields=["taken"])
                 try:
-                    account.taken=0
-                    account.save()
+                    account.taken = 0
+                    account.save(update_fields=["taken"])
                 except Exception:
                     pass
 #
