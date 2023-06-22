@@ -72,6 +72,11 @@ def start_parsing_by_keyword(special_group=False):
                 django.db.close_old_connections()
                 key_word.taken = 0
                 key_word.save(update_fields=["taken"])
+                try:
+                    account.taken=0
+                    account.save()
+                except Exception:
+                    pass
 #
 #
 # def start_parsing_by_source(special_group=False):
