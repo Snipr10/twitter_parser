@@ -70,7 +70,7 @@ def search_by_key(username, password, email, email_password, proxy_url, key_word
         search = MySearch(email, username, password, debug=True, proxy_url=proxy_url,
                           protonmail={'email': email, 'password': email_password})
         latest_results = search.run(
-                "VK",
+                key_word,
                 limit=100,
                 latest=True,  # get latest tweets only
                 retries=1,
