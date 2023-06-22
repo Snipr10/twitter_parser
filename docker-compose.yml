@@ -1,0 +1,7 @@
+version: '3.4'
+
+services:
+  main:
+    build: ./
+    command: python3 main.py
+    restart: on-failure
