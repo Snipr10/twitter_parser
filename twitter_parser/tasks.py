@@ -56,6 +56,7 @@ def start_parsing_by_keyword(special_group=False):
         if last_update is None or (last_update + datetime.timedelta(minutes=time_) <
                                    update_time_timezone(timezone.localtime())):
             print("key_word")
+            django.db.close_old_connections()
             key_word.taken = 1
             key_word.save(update_fields=["taken"])
             try:
