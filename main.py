@@ -86,6 +86,9 @@ if __name__ == '__main__':
     futures = []
 
     from twitter_parser.tasks import start_parsing_by_keyword
+    from twitter_parser.settings import network_id
+
+    from core import models
 
     #
     # for i in range(1):
@@ -106,4 +109,12 @@ if __name__ == '__main__':
         x.start()
         time.sleep(10)
 
+    while True:
+        try:
+            models.Keyword.objects.raw(
+                f"UPDATE `prsr_parser_keywords` SET `last_modified` = '2000-01-01 00:00:00' WHERE `network_id` = {network_id} and `last_modified` IS NULL")
+
+        except Exception:
+            pass
+        time.sleep(15)
 
