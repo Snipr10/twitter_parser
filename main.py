@@ -113,7 +113,7 @@ if __name__ == '__main__':
         try:
             print("update Keyword")
             models.Keyword.objects.raw(
-                f"UPDATE `prsr_parser_keywords` SET `last_modified` = '2000-01-01 00:00:00' WHERE `network_id` = {network_id} and `last_modified` IS NULL")
+                f"UPDATE prsr_parser_keywords SET last_modified = 2000-01-01 00:00:00 WHERE network_id = {network_id} and last_modified IS NULL")
 
         except Exception as e:
             print(e)
