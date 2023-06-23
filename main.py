@@ -113,6 +113,8 @@ if __name__ == '__main__':
     while True:
         try:
             models.Keyword.filter(last_modified__isnull=True).update(last_modified=datetime.date(2000, 1, 1))
+            models.Keyword.filter(last_modified__lte=datetime.date(2000, 1, 1)).update(last_modified=datetime.date(2000, 1, 1))
+
             print("update Keyword")
             # models.Keyword.objects.raw(
             #     f"UPDATE `prsr_parser_keywords` SET `last_modified` = `2000-01-01 00:00:00` WHERE `network_id` = `{network_id}` and `last_modified` IS NULL")
