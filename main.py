@@ -112,8 +112,8 @@ if __name__ == '__main__':
 
     while True:
         try:
-            models.Keyword.filter(last_modified__isnull=True).update(last_modified=datetime.date(2000, 1, 1))
-            models.Keyword.filter(last_modified__lte=datetime.date(2000, 1, 1)).update(last_modified=datetime.date(2000, 1, 1))
+            models.Keyword.objects.filter(last_modified__isnull=True).update(last_modified=datetime.date(2000, 1, 1))
+            models.Keyword.objects.filter(last_modified__lte=datetime.date(2000, 1, 1)).update(last_modified=datetime.date(2000, 1, 1))
 
             print("update Keyword")
             # models.Keyword.objects.raw(
