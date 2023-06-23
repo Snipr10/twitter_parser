@@ -37,7 +37,7 @@ def start_parsing_by_keyword(special_group=False):
     key_source = models.KeywordSource.objects.filter(source_id__in=list(select_sources.values_list('id', flat=True)))
     print(f"key_source {key_source}")
 
-    key_word = models.Keyword.objects.filter(network_id=network_id, enabled=1,
+    key_word = models.Keyword.objects.filter(last_modified__isnull=True).filter(network_id=network_id, enabled=1,
                                              taken=0,
 
                                              id__in=list(key_source.values_list(

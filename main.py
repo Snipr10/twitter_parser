@@ -1,3 +1,4 @@
+import datetime
 import multiprocessing
 import random
 import time
@@ -103,18 +104,19 @@ if __name__ == '__main__':
     #     x = threading.Thread(target=new_process_source, args=(i, False,))
     #     x.start()
 
-    # for i in range(2):
-    #     print("thread new_process_key " + str(i))
-    #     x = threading.Thread(target=new_process_key, args=(i, ))
-    #     x.start()
-    #     time.sleep(10)
+    for i in range(2):
+        print("thread new_process_key " + str(i))
+        x = threading.Thread(target=new_process_key, args=(i, ))
+        x.start()
+        time.sleep(10)
 
     while True:
         try:
+            models.Keyword.filter(last_modified__isnull=True).update(last_modified=datetime.date(2000, 1, 1))
             print("update Keyword")
-            models.Keyword.objects.raw(
-                f"UPDATE prsr_parser_keywords SET last_modified = 2000-01-01 00:00:00 WHERE network_id = {network_id} and last_modified IS NULL")
-
+            # models.Keyword.objects.raw(
+            #     f"UPDATE `prsr_parser_keywords` SET `last_modified` = `2000-01-01 00:00:00` WHERE `network_id` = `{network_id}` and `last_modified` IS NULL")
+        #
         except Exception as e:
             print(e)
         time.sleep(15)
