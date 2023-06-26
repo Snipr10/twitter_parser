@@ -43,7 +43,7 @@ def start_parsing_by_keyword(special_group=False):
                                                  'keyword_id', flat=True))
                                              ).order_by('last_modified')
     for key_word in key_words:
-        if len(key_word) < 15:
+        if len(key_word.keyword) < 15:
             break
     print(f"key_word {key_word}")
 
