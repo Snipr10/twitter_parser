@@ -37,12 +37,15 @@ def start_parsing_by_keyword(special_group=False):
     key_source = models.KeywordSource.objects.filter(source_id__in=list(select_sources.values_list('id', flat=True)))
     print(f"key_source {key_source}")
 
-    key_word = models.Keyword.objects.filter(last_modified__isnull=False).filter(last_modified__gte=datetime.date(2000, 1, 1)).filter(network_id=network_id, enabled=1,
+    key_words = models.Keyword.objects.filter(last_modified__isnull=False).filter(last_modified__gte=datetime.date(2000, 1, 1)).filter(network_id=network_id, enabled=1,
                                              taken=0,
                                              keyword__length__lt=15,
                                              id__in=list(key_source.values_list(
                                                  'keyword_id', flat=True))
-                                             ).order_by('last_modified').first()
+                                             ).order_by('last_modified')
+    for key_word in key_words:
+        if len(key_word) < 15:
+            break
     print(f"key_word {key_word}")
 
     if key_word is not None:
