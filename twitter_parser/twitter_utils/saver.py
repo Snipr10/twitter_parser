@@ -37,6 +37,7 @@ def save_d(res_tw, res_us):
         except Exception as e:
             print(e)
     for tw in res_tw:
+        print(parse(tw.get("created_at")), tw.get("id"))
         try:
             Post.objects.create(
                 id=tw.get("id"),

@@ -59,6 +59,7 @@ class MySearch(Search):
 
 
 def search_by_key(username, password, email, email_password, proxy_url, key_word):
+    key_word="беглов"
     res_tw = None
     res_us = None
     try:
@@ -86,3 +87,6 @@ def search_by_key(username, password, email, email_password, proxy_url, key_word
     except Exception as e:
         print(e)
     return res_tw, res_us
+
+if __name__ == '__main__':
+    search_by_key(None, None,None,None,None,"беглов")
