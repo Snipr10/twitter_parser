@@ -59,7 +59,6 @@ class MySearch(Search):
 
 
 def search_by_key(username, password, email, email_password, proxy_url, key_word):
-    key_word="беглов"
     res_tw = None
     res_us = None
     try:
