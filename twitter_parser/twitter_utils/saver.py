@@ -1,8 +1,13 @@
 import hashlib
+import json
 
 from core.models import User, Post
 
 from dateutil.parser import parse
+import pika
+
+from twitter_parser.settings import rmq_settings
+
 
 def get_md5_text(text):
     if text is None:
@@ -18,6 +23,7 @@ def get_sphinx_id(url):
 
 def save_d(res_tw, res_us):
     users = []
+    sphinx_ids= []
     for us in res_us:
         try:
                 User.objects.create(
@@ -39,6 +45,8 @@ def save_d(res_tw, res_us):
     for tw in res_tw:
         print(parse(tw.get("created_at")), tw.get("id"))
         try:
+            sphinx_id = get_sphinx_id(tw.get("id"))
+            sphinx_ids.append(sphinx_id)
             Post.objects.create(
                 id=tw.get("id"),
                 from_id=tw.get("user_id"),
@@ -50,9 +58,25 @@ def save_d(res_tw, res_us):
                 comments=tw.get('retweet_count') or 0,
                 reposts=tw.get('reply_count') or 0,
                 likes=tw.get('favorite_count') or 0,
-                sphinx_id=get_sphinx_id(tw.get("id")),
+                sphinx_id=sphinx_id,
                 content_hash=get_md5_text(tw.get("full_text"))
 
             )
         except Exception as e:
             print(e)
+
+    try:
+        parameters = pika.URLParameters(rmq_settings)
+        connection = pika.BlockingConnection(parameters=parameters)
+        channel = connection.channel()
+        for sphinx_id in sphinx_ids:
+            rmq_json_data = {
+                "id": sphinx_id,
+                "network_id": 2
+            }
+            channel.basic_publish(exchange='',
+                                  routing_key='post_index',
+                                  body=json.dumps(rmq_json_data))
+        channel.close()
+    except Exception as e:
+        print(f"RMQ basic_publish {e}")
