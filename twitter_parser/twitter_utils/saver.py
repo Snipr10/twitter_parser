@@ -66,10 +66,13 @@ def save_d(res_tw, res_us):
             print(e)
 
     try:
+        print(sphinx_ids)
         parameters = pika.URLParameters(rmq_settings)
         connection = pika.BlockingConnection(parameters=parameters)
         channel = connection.channel()
         for sphinx_id in sphinx_ids:
+            print(f"{sphinx_id} added")
+
             rmq_json_data = {
                 "id": sphinx_id,
                 "network_id": 2
