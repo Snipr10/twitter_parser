@@ -86,8 +86,12 @@ def search_by_key(username, password, email, email_password, proxy_url, key_word
         res_us = []
         for r in latest_results[0]:
             try:
-                res_tw.extend((r.get('globalObjects') or {}).get("tweets").values() or [])
-                res_us.extend((r.get('globalObjects') or {}).get("users").values() or [])
+                post = r['content']['itemContent']['tweet_results']['result']['legacy']
+                us =[r['content']['itemContent']['tweet_results']['result']['core']['user_results']['result'][
+            'legacy']]
+                us[0]["id"]=post['user_id_str']
+                res_tw.extend([r['content']['itemContent']['tweet_results']['result']['legacy']])
+                res_us.extend(us)
             except Exception:
                 pass
     except Exception as e:
