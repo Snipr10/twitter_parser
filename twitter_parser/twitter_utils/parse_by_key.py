@@ -15,7 +15,7 @@ from twitter_parser.twitter_utils.login import login
 class MySearch(Search):
     def __init__(self, email: str = None, username: str = None, password: str = None, session: Client = None, proxy_url=None, **kwargs):
         self.proxy_url = proxy_url
-        self.logger = self._init_logger(kwargs.get('log_config', False))
+        self.logger = self._init_logger(**kwargs)
         self.session = self._validate_session(email, username, password, session, proxy_url,  **kwargs)
         self.api = 'https://api.twitter.com/2/search/adaptive.json?'
         self.save = kwargs.get('save', True)
@@ -25,7 +25,7 @@ class MySearch(Search):
         proxies = {"http://": self.proxy_url, "https://": self.proxy_url}
 
         async with AsyncClient(headers=get_headers(self.session), proxies=proxies) as s:
-            return await asyncio.gather(*(self.paginate(q, s, config, out, **kwargs) for q in queries))
+            return await asyncio.gather(*(self.paginate(s, q, config, out, **kwargs) for q in queries))
 
     @classmethod
     def _validate_session(cls, *args, **kwargs):
@@ -69,12 +69,19 @@ def search_by_key(username, password, email, email_password, proxy_url, key_word
 
         search = MySearch(email, username, password, debug=True, proxy_url=proxy_url,
                           protonmail={'email': email, 'password': email_password})
+        # search = Search(email, username, password, save=True, debug=1)
+
         latest_results = search.run(
-                key_word,
-                limit=100,
-                latest=True,  # get latest tweets only
-                retries=1,
-            )
+    limit=10,
+    retries=2,
+    queries=[
+        {
+            'category': 'Top',
+            'query': 'беглов'
+        }
+
+    ],
+)
         res_tw = []
         res_us = []
         for r in latest_results[0]:

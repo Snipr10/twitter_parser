@@ -33,7 +33,7 @@ def login(email: str, username: str, password: str, proxy_url:str, **kwargs) -> 
 
     )
 
-    # client.protonmail = kwargs.get('protonmail')
+    client.protonmail = kwargs.get('protonmail')
 
     client = execute_login_flow(client)
     if kwargs.get('debug'):
@@ -185,15 +185,17 @@ def confirm_email(client: Client, m) -> Client:
             }]
     })
 
-def execute_login_flow(client: Client) -> Client | None:
+def execute_login_flow(client: Client,  **kwargs) -> Client | None:
     client = init_guest_token(client)
     for fn in [flow_start, flow_instrumentation, flow_username, flow_password, flow_duplication_check]:
         client = fn(client)
 
     # solve email challenge
     if client.cookies.get('confirm_email') == 'true':
-        m = get_email_message(client.protonmail['email'], client.protonmail['password'])
-        client = confirm_email(client, m)
+        client = confirm_email_my(client)
+    # if client.cookies.get('confirm_email') == 'true':
+    #     m = get_email_message(client.protonmail['email'], client.protonmail['password'])
+    #     client = confirm_email(client, m)
 
     # # solve confirmation challenge (Proton Mail only)
     # if client.cookies.get('confirmation_code') == 'true':
@@ -204,6 +206,26 @@ def execute_login_flow(client: Client) -> Client | None:
     #         return
     #     time.sleep(10)  # todo: just poll the inbox until it arrives instead of waiting
     #     client = solve_confirmation_challenge(client, *client.protonmail.values())
-
+    if client.cookies.get('confirmation_code') == 'true':
+        if not kwargs.get('proton'):
+            print(f'[{RED}warning{RESET}] Please check your email for a confirmation code'
+                  f' and log in again using the web app. If you wish to automatically solve'
+                  f' email confirmation challenges, add a Proton Mail account in your account settings')
+            m = get_email_message(client.protonmail['email'], client.protonmail['password'])
+            client = confirm_email(client, m)
+        # client = solve_confirmation_challenge(client, **kwargs)
     return client
 
+
+def confirm_email_my(client: Client) -> Client:
+    return update_token(client, 'flow_token', 'https://api.twitter.com/1.1/onboarding/task.json', json={
+        "flow_token": client.cookies.get('flow_token'),
+        "subtask_inputs": [
+            {
+                "subtask_id": "LoginAcid",
+                "enter_text": {
+                    "text": client.cookies.get('email'),
+                    "link": "next_link"
+                }
+            }]
+    })
