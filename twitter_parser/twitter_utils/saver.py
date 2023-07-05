@@ -36,20 +36,20 @@ def save_d(res_tw, res_us):
                     district=0,
                     friends=us.get("friends_count") or 0,
                     created_date= parse(us.get("created_at")),
-                    logo=us.get('profile_image_url'),
+                    logo=us.get('profile_banner_url'),
 
 
             )
         except Exception as e:
             print(e)
     for tw in res_tw:
-        print(parse(tw.get("created_at")), tw.get("id"))
+        print(parse(tw.get("created_at")), tw.get("id_str"))
         try:
-            sphinx_id = get_sphinx_id(tw.get("id"))
+            sphinx_id = get_sphinx_id(tw.get("id_str"))
             sphinx_ids.append(sphinx_id)
             Post.objects.create(
-                id=tw.get("id"),
-                from_id=tw.get("user_id"),
+                id=tw.get("id_str"),
+                from_id=tw.get('user_id_str'),
                 owner_sphinx_id=get_sphinx_id(tw.get("user_id")),
                 content=tw.get("full_text"),
                 repost_of=bool(tw.get('retweeted')),
