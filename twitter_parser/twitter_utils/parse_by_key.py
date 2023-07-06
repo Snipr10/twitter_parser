@@ -72,24 +72,24 @@ def search_by_key(username, password, email, email_password, proxy_url, key_word
         # search = Search(email, username, password, save=True, debug=1)
 
         latest_results = search.run(
-    limit=10,
-    retries=2,
-    queries=[
-        {
-            'category': 'Top',
-            'query': 'беглов'
-        }
+            limit=50,
+            retries=2,
+            queries=[
+                {
+                    'category': 'Latest',
+                    'query': key_word
+                }
 
-    ],
-)
+            ],
+        )
         res_tw = []
         res_us = []
         for r in latest_results[0]:
             try:
                 post = r['content']['itemContent']['tweet_results']['result']['legacy']
-                us =[r['content']['itemContent']['tweet_results']['result']['core']['user_results']['result'][
-            'legacy']]
-                us[0]["id"]=post['user_id_str']
+                us = [r['content']['itemContent']['tweet_results']['result']['core']['user_results']['result'][
+                          'legacy']]
+                us[0]["id"] = post['user_id_str']
                 res_tw.extend([r['content']['itemContent']['tweet_results']['result']['legacy']])
                 res_us.extend(us)
             except Exception:
