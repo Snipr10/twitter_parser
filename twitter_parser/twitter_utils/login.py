@@ -77,7 +77,10 @@ def get_email_message(username, password):
     # use your email provider's IMAP server, you can look for your provider's IMAP server on Google
     # or check this page: https://www.systoolsgroup.com/imap/
     # for office 365, it's this:
-    imap_server = "outlook.office365.com"
+    if "@firstmailler" in username:
+        imap_server = "imap.firstmail.ltd"
+    else:
+        imap_server = "outlook.office365.com"
 
     def clean(text):
         # clean text for creating a folder
@@ -97,7 +100,10 @@ def get_email_message(username, password):
         body = []
 
         # fetch the email message by ID
-        res, msg = imap.fetch(str(i), "(RFC822)")
+        try:
+            res, msg = imap.fetch(str(i), "(RFC822)")
+        except Exception:
+            continue
         for response in msg:
             if isinstance(response, tuple):
                 # parse a bytes email into a message object
@@ -114,6 +120,7 @@ def get_email_message(username, password):
                 print("Subject:", subject)
                 print("From:", From)
                 # if the email message is multipart
+                body.append(subject)
                 if msg.is_multipart():
                     # iterate over email parts
                     for part in msg.walk():
@@ -160,15 +167,21 @@ def get_email_message(username, password):
                     # open in the default browser
                     # webbrowser.open(filepath)
                 print("=" * 100)
-        if "Please enter this verification code to get started on Twitter" in str(body):
+        if "Please enter this verification code to get started on Twitter" in str(body) or "Ваш код подтверждения в Твиттере" in str(body):
             res = re.findall(r'\d{6}', str(body))[0]
             break
         elif "We noticed an attempt to log in to" in str(body):
             res = re.findall(r'(?<=code.\\r\\n\\r\\n)(.+?)(?=\\r\\n\\r\\nIf this wasn’)', str(body))[0]
             break
+        elif "Ваш код подтверждения в Twitter — " in  str(body) :
+            res = re.findall(r'(?<=Ваш код подтверждения в Twitter — )(\w{8})', str(body))[0]
+            break
     # close the connection and logout
-    imap.close()
-    imap.logout()
+    try:
+        imap.close()
+        imap.logout()
+    except Exception:
+        pass
     return res
 
 
