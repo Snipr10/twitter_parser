@@ -235,7 +235,7 @@ class SourcesItems(models.Model):
     type = models.IntegerField(default=1)
     data = models.CharField(default='', max_length=4096)
     last_modified = models.DateTimeField(null=True, blank=True)
-    reindexed = models.DateTimeField(null=True, blank=True)
+    # reindexed = models.DateTimeField(null=True, blank=True)
     taken = models.BooleanField(default=0)
     reindexing = models.BooleanField(default=0)
     disabled = models.BooleanField(default=0)
