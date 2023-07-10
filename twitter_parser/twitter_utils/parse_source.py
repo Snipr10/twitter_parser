@@ -111,8 +111,7 @@ def search_by_source(username, password, email, email_password, proxy_url, sourc
                 print(e)
     except Exception as e:
         print(e)
-    from twitter_parser.twitter_utils.saver import save_d
-    save_d(res_tw, res_us)
+
 
     return res_tw, res_us
 
