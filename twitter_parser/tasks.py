@@ -38,11 +38,12 @@ def start_parsing_by_keyword(special_group=False):
     key_source = models.KeywordSource.objects.filter(source_id__in=list(select_sources.values_list('id', flat=True)))
     print(f"key_source {key_source}")
 
-    key_words = models.Keyword.objects.filter(last_modified__isnull=False).filter(last_modified__gte=datetime.date(2000, 1, 1)).filter(network_id=network_id, enabled=1,
-                                             taken=0,
-                                             id__in=list(key_source.values_list(
-                                                 'keyword_id', flat=True))
-                                             ).order_by('last_modified')
+    key_words = models.Keyword.objects.filter(last_modified__isnull=False).filter(
+        last_modified__gte=datetime.date(2000, 1, 1)).filter(network_id=network_id, enabled=1,
+                                                             taken=0,
+                                                             id__in=list(key_source.values_list(
+                                                                 'keyword_id', flat=True))
+                                                             ).order_by('last_modified')
     for key_word in key_words:
         if len(key_word.keyword) < 15:
             break
@@ -60,7 +61,8 @@ def start_parsing_by_keyword(special_group=False):
                                    update_time_timezone(timezone.localtime())):
             print("key_word")
             django.db.close_old_connections()
-            models.Keyword.objects.raw(f"UPDATE `prsr_parser_keywords` SET `taken` = '1' WHERE `prsr_parser_keywords`.`id` = {key_word.id}")
+            models.Keyword.objects.raw(
+                f"UPDATE `prsr_parser_keywords` SET `taken` = '1' WHERE `prsr_parser_keywords`.`id` = {key_word.id}")
             # key_word.taken = 1
             # key_word.save(update_fields=["taken"])
             try:
@@ -69,7 +71,8 @@ def start_parsing_by_keyword(special_group=False):
                 if account:
                     print("search_by_key")
 
-                    res_tw, res_us = search_by_key(account.login, account.password,account.email, account.email_password, proxy, key_word.keyword)
+                    res_tw, res_us = search_by_key(account.login, account.password, account.email,
+                                                   account.email_password, proxy, key_word.keyword)
                     if res_tw is not None:
                         key_word.last_modified = update_time_timezone(timezone.localtime())
                         key_word.save(update_fields=["last_modified"])
@@ -101,20 +104,21 @@ def start_parsing_by_source(special_group=False):
         print("not select_sources")
         return
     print("sources_item")
+    # sources_item = models.SourcesItems.objects.filter(network_id=network_id, disabled=0, taken=0,
+    #                                                   reindexing=1,
+    #                                                   last_modified__isnull=True,
+    #                                                   source_id__in=list(
+    #                                                       select_sources.values_list('id', flat=True))
+    #                                                   ).first()
+    # if sources_item is None:
     sources_item = models.SourcesItems.objects.filter(network_id=network_id, disabled=0, taken=0,
-                                                      reindexing=1,
                                                       last_modified__isnull=False,
                                                       source_id__in=list(
                                                           select_sources.values_list('id', flat=True))
                                                       ).order_by(
         'last_modified').first()
-    if sources_item is None:
-        sources_item = models.SourcesItems.objects.filter(network_id=network_id, disabled=0, taken=0,
-                                                          last_modified__isnull=False,
-                                                          source_id__in=list(
-                                                              select_sources.values_list('id', flat=True))
-                                                          ).order_by(
-            'last_modified').first()
+    print(f"sources_item {sources_item}")
+
     if sources_item is not None:
         print(sources_item)
         select_source = select_sources.get(id=sources_item.source_id)
@@ -137,7 +141,7 @@ def start_parsing_by_source(special_group=False):
                     print("search_by_key")
 
                     res_tw, res_us = search_by_source(account.login, account.password, account.email,
-                                                   account.email_password, proxy, sources_item.keyword)
+                                                      account.email_password, proxy, sources_item.keyword)
                     # if res_tw is not None:
                     sources_item.last_modified = update_time_timezone(timezone.localtime())
                     sources_item.save(update_fields=["last_modified"])
