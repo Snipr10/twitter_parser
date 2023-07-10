@@ -1,6 +1,5 @@
 import datetime
 import multiprocessing
-import random
 import time
 
 import threading
@@ -61,7 +60,7 @@ def start_parsing_account_source_while():
     print("start_parsing_account_source_while")
     while True:
         try:
-            start_parsing_account_source()
+            start_parsing_account_source(special_group=False)
             time.sleep(60)
         except Exception as e:
             print(e)
@@ -79,7 +78,7 @@ if __name__ == '__main__':
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
-    print(1)
+    print(21)
     import django
 
     django.setup()
