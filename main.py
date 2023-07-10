@@ -86,7 +86,7 @@ if __name__ == '__main__':
 
     futures = []
 
-    from twitter_parser.tasks import start_parsing_by_keyword
+    from twitter_parser.tasks import start_parsing_by_keyword, start_parsing_by_source
     from twitter_parser.settings import network_id
 
     from core import models
@@ -98,11 +98,11 @@ if __name__ == '__main__':
     #     x = threading.Thread(target=new_process_source, args=(i, True,))
     #     x.start()
     #
-    # for i in range(5):
-    #     time.sleep(10)
-    #     print("thread new_process_source " + str(i))
-    #     x = threading.Thread(target=new_process_source, args=(i, False,))
-    #     x.start()
+    for i in range(5):
+        time.sleep(10)
+        print("thread new_process_source " + str(i))
+        x = threading.Thread(target=new_process_source, args=(i, False,))
+        x.start()
 
     for i in range(2):
         print("thread new_process_key " + str(i))
