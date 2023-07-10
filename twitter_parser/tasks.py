@@ -90,12 +90,13 @@ def start_parsing_by_keyword(special_group=False):
 #
 
 def start_parsing_by_source(special_group=False):
-    print(1)
+    print("start_parsing_by_source 1")
     django.db.close_old_connections()
 
     select_sources = models.Sources.objects.filter(
         Q(retro_max__isnull=True) | Q(retro_max__gte=timezone.now()), published=1,
         status=1)
+    print(2)
     if not select_sources.exists():
         print("not select_sources")
         return
