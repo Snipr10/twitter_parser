@@ -141,7 +141,7 @@ def start_parsing_by_source(special_group=False):
                     print("search_by_key")
 
                     res_tw, res_us = search_by_source(account.login, account.password, account.email,
-                                                      account.email_password, proxy, sources_item.keyword)
+                                                      account.email_password, proxy, sources_item.data)
                     # if res_tw is not None:
                     sources_item.last_modified = update_time_timezone(timezone.localtime())
                     sources_item.save(update_fields=["last_modified"])
