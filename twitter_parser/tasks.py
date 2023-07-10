@@ -122,9 +122,9 @@ def start_parsing_by_source(special_group=False):
     if sources_item is not None:
         print(sources_item)
         select_source = select_sources.get(id=sources_item.source_id)
-        retro = select_source.retro
-
-        retro_date = datetime.datetime(retro.year, retro.month, retro.day)
+        # retro = select_source.retro
+        #
+        # retro_date = datetime.datetime(retro.year, retro.month, retro.day)
         last_modified = sources_item.last_modified
 
         sources_item.taken = 1
