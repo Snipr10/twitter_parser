@@ -100,7 +100,7 @@ def start_parsing_by_source(special_group=False):
     if not select_sources.exists():
         print("not select_sources")
         return
-
+    print("sources_item")
     sources_item = models.SourcesItems.objects.filter(network_id=network_id, disabled=0, taken=0,
                                                       reindexing=1,
                                                       last_modified__isnull=False,
@@ -108,7 +108,13 @@ def start_parsing_by_source(special_group=False):
                                                           select_sources.values_list('id', flat=True))
                                                       ).order_by(
         'last_modified').first()
-
+    if sources_item is None:
+        sources_item = models.SourcesItems.objects.filter(network_id=network_id, disabled=0, taken=0,
+                                                          last_modified__isnull=False,
+                                                          source_id__in=list(
+                                                              select_sources.values_list('id', flat=True))
+                                                          ).order_by(
+            'last_modified').first()
     if sources_item is not None:
         print(sources_item)
         select_source = select_sources.get(id=sources_item.source_id)
