@@ -13,5 +13,5 @@ requests==2.22.0
 six==1.16.0
 sqlparse==0.4.1
 urllib3==1.25.11
-twitter-api-client==0.10.10
+twitter-api-client==0.10.11
 pika==1.2.0

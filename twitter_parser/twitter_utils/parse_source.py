@@ -20,7 +20,7 @@ class MyScraper(Scraper):
         self.out = Path(kwargs.get('out', 'data'))
         self.guest = False
         self.logger = self._init_logger(**kwargs)
-        self.session = self._validate_session(email, username, password, session, proxy_url, **kwargs)
+        self.session, self.errors = self._validate_session(email, username, password, session, proxy_url, **kwargs)
         self.proxy_url = proxy_url
 
     async def _process(self, operation: tuple, queries: list[dict], **kwargs):
@@ -36,14 +36,14 @@ class MyScraper(Scraper):
 
     def _validate_session(self, *args, **kwargs):
         email, username, password, session, proxy_url = args
-
+        errors = []
         # validate credentials
         if all((email, username, password)):
             return login(email, username, password, proxy_url,  **kwargs)
 
         # invalid credentials, try validating session
         if session and all(session.cookies.get(c) for c in {'ct0', 'auth_token'}):
-            return session
+            return session, errors
 
         # invalid credentials and session
         cookies = kwargs.get('cookies')
@@ -52,24 +52,25 @@ class MyScraper(Scraper):
         if isinstance(cookies, dict) and all(cookies.get(c) for c in {'ct0', 'auth_token'}):
             _session = Client(cookies=cookies, follow_redirects=True)
             _session.headers.update(get_headers(_session))
-            return _session
+            return _session, errors
 
         # try validating cookies from file
         if isinstance(cookies, str):
             _session = Client(cookies=orjson.loads(Path(cookies).read_bytes()), follow_redirects=True)
             _session.headers.update(get_headers(_session))
-            return _session
+            return _session, errors
 
         # no session, credentials, or cookies provided. use guest session.
         if self.debug:
             self.logger.warning(f'{RED}This is a guest session, some endpoints cannot be accessed.{RESET}\n')
         self.guest = True
-        return session
+        return session, errors
 
 
 def search_by_source(username, password, email, email_password, proxy_url, source):
     res_tw = None
     res_us = None
+    errors = []
     try:
         # username, password = "visitant_YTs_", "tWi8uz70"
         # proxy_url = "http://tools-admin_metamap_com:456f634698@193.142.249.56:30001"
@@ -77,7 +78,7 @@ def search_by_source(username, password, email, email_password, proxy_url, sourc
         # email = 'suutjijao@hotmail.com'
 
         scraper = MyScraper(email, username, password, proxy_url=proxy_url, protonmail={'email': email, 'password': email_password})
-
+        errors = scraper.errors
         try:
             user_ids = [int(source)]
         except Exception:
@@ -111,9 +112,8 @@ def search_by_source(username, password, email, email_password, proxy_url, sourc
                 print(e)
     except Exception as e:
         print(e)
+    return res_tw, res_us, errors
 
-
-    return res_tw, res_us
 
 if __name__ == '__main__':
     search_by_source(None, None, None, None, None, "Serhio62472993")

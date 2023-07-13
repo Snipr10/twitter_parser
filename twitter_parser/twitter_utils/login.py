@@ -12,7 +12,7 @@ import re
 import os
 
 
-def login(email: str, username: str, password: str, proxy_url:str, **kwargs) -> Client:
+def login(email: str, username: str, password: str, proxy_url:str, **kwargs) -> tuple[Client, list]:
     proxies = {"http://": proxy_url, "https://": proxy_url}
     client = Client(
         cookies={
@@ -35,16 +35,19 @@ def login(email: str, username: str, password: str, proxy_url:str, **kwargs) -> 
 
     client.protonmail = kwargs.get('protonmail')
 
-    client = execute_login_flow(client)
+    client, errors = execute_login_flow(client)
     if kwargs.get('debug'):
         if not client or client.cookies.get('flow_errors') == 'true':
             print(f'[{RED}error{RESET}] {BOLD}{username}{RESET} login failed')
+            errors.append("login failed")
         else:
             print(f'[{GREEN}success{RESET}] {BOLD}{username}{RESET} login success')
-    return client
+            errors.append("login success")
+    return client, errors
 
 
-def update_token(client: Client, key: str, url: str, **kwargs) -> Client:
+def update_token(client: Client, key: str, url: str, **kwargs) -> tuple[Client, list]:
+    errors = []
     caller_name = sys._getframe(1).f_code.co_name
     try:
         headers = {
@@ -70,7 +73,8 @@ def update_token(client: Client, key: str, url: str, **kwargs) -> Client:
     except KeyError as e:
         client.cookies.set('flow_errors', 'true')  # signal that an error occurred somewhere in the flow
         print(f'[{RED}error{RESET}] failed to update token at {BOLD}{caller_name}{RESET}\n{e}')
-    return client
+        errors.append('failed to update token at {BOLD}{caller_name}{RESET}\n{e}')
+    return client, errors
 
 def get_email_message(username, password):
     # account credentials
@@ -185,7 +189,7 @@ def get_email_message(username, password):
     return res
 
 
-def confirm_email(client: Client, m) -> Client:
+def confirm_email(client: Client, m) -> tuple[Client, list]:
     return update_token(client, 'flow_token', 'https://api.twitter.com/1.1/onboarding/task.json', json={
         "flow_token": client.cookies.get('flow_token'),
         "subtask_inputs": [
@@ -198,14 +202,15 @@ def confirm_email(client: Client, m) -> Client:
             }]
     })
 
-def execute_login_flow(client: Client,  **kwargs) -> Client | None:
+def execute_login_flow(client: Client,  **kwargs) -> tuple[Client | None, list]:
+    errors = []
     client = init_guest_token(client)
     for fn in [flow_start, flow_instrumentation, flow_username, flow_password, flow_duplication_check]:
         client = fn(client)
 
     # solve email challenge
     if client.cookies.get('confirm_email') == 'true':
-        client = confirm_email_my(client)
+        client, errors = confirm_email_my(client)
     # if client.cookies.get('confirm_email') == 'true':
     #     m = get_email_message(client.protonmail['email'], client.protonmail['password'])
     #     client = confirm_email(client, m)
@@ -224,13 +229,17 @@ def execute_login_flow(client: Client,  **kwargs) -> Client | None:
             print(f'[{RED}warning{RESET}] Please check your email for a confirmation code'
                   f' and log in again using the web app. If you wish to automatically solve'
                   f' email confirmation challenges, add a Proton Mail account in your account settings')
-            m = get_email_message(client.protonmail['email'], client.protonmail['password'])
-            client = confirm_email(client, m)
+            try:
+                m = get_email_message(client.protonmail['email'], client.protonmail['password'])
+                client, new_errors = confirm_email(client, m)
+                errors.extend(new_errors)
+            except Exception as e:
+                errors.append(e)
         # client = solve_confirmation_challenge(client, **kwargs)
-    return client
+    return client, errors
 
 
-def confirm_email_my(client: Client) -> Client:
+def confirm_email_my(client: Client) -> tuple[Client, list]:
     return update_token(client, 'flow_token', 'https://api.twitter.com/1.1/onboarding/task.json', json={
         "flow_token": client.cookies.get('flow_token'),
         "subtask_inputs": [

@@ -16,7 +16,7 @@ class MySearch(Search):
     def __init__(self, email: str = None, username: str = None, password: str = None, session: Client = None, proxy_url=None, **kwargs):
         self.proxy_url = proxy_url
         self.logger = self._init_logger(**kwargs)
-        self.session = self._validate_session(email, username, password, session, proxy_url,  **kwargs)
+        self.session, self.errors = self._validate_session(email, username, password, session, proxy_url,  **kwargs)
         self.api = 'https://api.twitter.com/2/search/adaptive.json?'
         self.save = kwargs.get('save', True)
         self.debug = kwargs.get('debug', 0)
@@ -30,14 +30,14 @@ class MySearch(Search):
     @classmethod
     def _validate_session(cls, *args, **kwargs):
         email, username, password, session, proxy_url = args
-
+        errors = []
         # validate credentials
         if all((email, username, password)):
             return login(email, username, password, proxy_url,  **kwargs)
 
         # invalid credentials, try validating session
         if session and all(session.cookies.get(c) for c in {'ct0', 'auth_token'}):
-            return session
+            return session, errors
 
         # invalid credentials and session
         cookies = kwargs.get('cookies')
@@ -46,13 +46,13 @@ class MySearch(Search):
         if isinstance(cookies, dict) and all(cookies.get(c) for c in {'ct0', 'auth_token'}):
             _session = Client(cookies=cookies, follow_redirects=True)
             _session.headers.update(get_headers(_session))
-            return _session
+            return _session, errors
 
         # try validating cookies from file
         if isinstance(cookies, str):
             _session = Client(cookies=orjson.loads(Path(cookies).read_bytes()), follow_redirects=True)
             _session.headers.update(get_headers(_session))
-            return _session
+            return _session, errors
 
         raise Exception('Session not authenticated. '
                         'Please use an authenticated session or remove the `session` argument and try again.')
@@ -61,6 +61,7 @@ class MySearch(Search):
 def search_by_key(username, password, email, email_password, proxy_url, key_word):
     res_tw = None
     res_us = None
+    errors = []
     try:
         # email, username, password = "kemullinax70@hotmail.com", "queleraren39157", "2SmyGTeoRm"
         # proxy_url = "http://tools-admin_metamap_com:456f634698@193.142.249.56:30001"
@@ -70,7 +71,7 @@ def search_by_key(username, password, email, email_password, proxy_url, key_word
         search = MySearch(email, username, password, debug=True, proxy_url=proxy_url,
                           protonmail={'email': email, 'password': email_password})
         # search = Search(email, username, password, save=True, debug=1)
-
+        errors = search.errors
         latest_results = search.run(
             limit=50,
             retries=2,
@@ -96,7 +97,7 @@ def search_by_key(username, password, email, email_password, proxy_url, key_word
                 pass
     except Exception as e:
         print(e)
-    return res_tw, res_us
+    return res_tw, res_us, errors
 
 if __name__ == '__main__':
-    search_by_key(None, None,None,None,None,"беглов")
+    search_by_key(None, None, None, None, None, "беглов")

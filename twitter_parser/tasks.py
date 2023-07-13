@@ -65,13 +65,14 @@ def start_parsing_by_keyword(special_group=False):
                 f"UPDATE `prsr_parser_keywords` SET `taken` = '1' WHERE `prsr_parser_keywords`.`id` = {key_word.id}")
             # key_word.taken = 1
             # key_word.save(update_fields=["taken"])
+            errors = []
             try:
                 print("get_session")
                 account, proxy = get_session()
                 if account:
                     print("search_by_key")
 
-                    res_tw, res_us = search_by_key(account.login, account.password, account.email,
+                    res_tw, res_us, errors = search_by_key(account.login, account.password, account.email,
                                                    account.email_password, proxy, key_word.keyword)
                     if res_tw is not None:
                         key_word.last_modified = update_time_timezone(timezone.localtime())
@@ -85,7 +86,8 @@ def start_parsing_by_keyword(special_group=False):
                 key_word.save(update_fields=["taken"])
                 try:
                     account.taken = 0
-                    account.save(update_fields=["taken"])
+                    account.errors = str(errors)
+                    account.save(update_fields=["taken", "errors"])
                 except Exception:
                     pass
 
@@ -131,7 +133,7 @@ def start_parsing_by_source(special_group=False):
         sources_item.save(update_fields=["taken"])
         time_ = select_source.sources
         print(5)
-
+        errors = []
         if last_modified is None or (last_modified + datetime.timedelta(minutes=time_) <
                                      update_time_timezone(timezone.localtime())):
             try:
@@ -140,7 +142,7 @@ def start_parsing_by_source(special_group=False):
                 if account:
                     print("search_by_key")
 
-                    res_tw, res_us = search_by_source(account.login, account.password, account.email,
+                    res_tw, res_us, errors = search_by_source(account.login, account.password, account.email,
                                                       account.email_password, proxy, sources_item.data)
                     # if res_tw is not None:
                     sources_item.last_modified = update_time_timezone(timezone.localtime())
@@ -154,7 +156,8 @@ def start_parsing_by_source(special_group=False):
                 sources_item.save(update_fields=["taken"])
                 try:
                     account.taken = 0
-                    account.save(update_fields=["taken"])
+                    account.errors = str(errors)
+                    account.save(update_fields=["taken", "errors"])
                 except Exception:
                     pass
 #

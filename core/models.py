@@ -14,6 +14,7 @@ class Account(models.Model):
     start_parsing = models.DateTimeField(default=now)
     last_parsing = models.DateTimeField(default=now)
     proxy_id = models.CharField(max_length=256)
+    errors = models.CharField(max_length=256)
 
     class Meta:
         db_table = 'prsr_parser_tw_accounts'
@@ -40,6 +41,7 @@ class AllProxy(models.Model):
 
     class Meta:
         db_table = 'prsr_parser_proxy'
+
 
 class Post(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -73,7 +75,7 @@ class User(models.Model):
     url = models.CharField(default="", max_length=255, null=True, blank=True)
     followers = models.IntegerField(default=0, null=True, blank=True)
     district = models.IntegerField(default=0, null=True, blank=True)
-    friends	= models.IntegerField(default=0, null=True, blank=True)
+    friends = models.IntegerField(default=0, null=True, blank=True)
     groups = models.IntegerField(default=0, null=True, blank=True)
     created_date = models.DateTimeField(null=True, blank=True)
     logo = models.CharField(max_length=255)
@@ -219,6 +221,7 @@ class Sources(models.Model):
     class Meta:
         db_table = 'prsr_parser_sources'
 
+
 #
 # class SourcesSpecial(models.Model):
 #     source_id = models.IntegerField()
@@ -244,6 +247,7 @@ class SourcesItems(models.Model):
     class Meta:
         db_table = 'prsr_parser_source_items'
 
+
 #
 # class SourcesAccountsItems(models.Model):
 #     source_id = models.IntegerField()
@@ -268,6 +272,8 @@ class Keyword(models.Model):
 
     class Meta:
         db_table = 'prsr_parser_keywords'
+
+
 #
 
 class KeywordSource(models.Model):
@@ -276,7 +282,6 @@ class KeywordSource(models.Model):
 
     class Meta:
         db_table = 'prsr_parser_source_keywords'
-
 
 # class Account(models.Model):
 #     login = models.CharField(default='', max_length=200)
