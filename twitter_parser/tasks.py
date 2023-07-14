@@ -87,7 +87,9 @@ def start_parsing_by_keyword(special_group=False):
                 try:
                     account.taken = 0
                     account.errors = str(errors)
-                    account.save(update_fields=["taken", "errors"])
+                    if "login failed" in str(errors):
+                        account.is_active += 1
+                    account.save(update_fields=["taken", "errors", "is_active"])
                 except Exception:
                     pass
 
@@ -157,7 +159,9 @@ def start_parsing_by_source(special_group=False):
                 try:
                     account.taken = 0
                     account.errors = str(errors)
-                    account.save(update_fields=["taken", "errors"])
+                    if "login failed" in str(errors):
+                        account.is_active += 1
+                    account.save(update_fields=["taken", "errors", "is_active"])
                 except Exception:
                     pass
 #
