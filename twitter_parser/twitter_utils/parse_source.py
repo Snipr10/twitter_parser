@@ -112,6 +112,8 @@ def search_by_source(username, password, email, email_password, proxy_url, sourc
                 print(e)
     except Exception as e:
         print(e)
+        errors.append(e)
+
     return res_tw, res_us, errors
 
 

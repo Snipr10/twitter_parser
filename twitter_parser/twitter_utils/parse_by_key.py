@@ -97,6 +97,7 @@ def search_by_key(username, password, email, email_password, proxy_url, key_word
                 pass
     except Exception as e:
         print(e)
+        errors.append(e)
     return res_tw, res_us, errors
 
 if __name__ == '__main__':
