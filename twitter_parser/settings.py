@@ -185,4 +185,4 @@ LOGGING = {
 BEST_PROXY_KEY = '3f47cf0333045116c1f6ad61fa4faa68'
 rmq_settings = "amqp://post_index:R2ghtt9hebLv@192.168.5.46:5672/post_index"
 
-FIRST_DATE = parse("2/4/2022")
+FIRST_DATE = parse("2022-04-01 01:00:00+00:00")
