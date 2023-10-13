@@ -6,7 +6,7 @@ from core.models import User, Post
 from dateutil.parser import parse
 import pika
 
-from twitter_parser.settings import rmq_settings
+from twitter_parser.settings import rmq_settings, FIRST_DATE
 
 
 def get_md5_text(text):
@@ -45,6 +45,9 @@ def save_d(res_tw, res_us):
     for tw in res_tw:
         print(parse(tw.get("created_at")), tw.get("id_str"))
         try:
+            created_date = parse(tw.get("created_at"))
+            if created_date < FIRST_DATE:
+                continue
             sphinx_id = get_sphinx_id(tw.get("id_str"))
             sphinx_ids.append(sphinx_id)
             Post.objects.create(
@@ -53,7 +56,7 @@ def save_d(res_tw, res_us):
                 owner_sphinx_id=get_sphinx_id(tw.get("user_id")),
                 content=tw.get("full_text"),
                 repost_of=bool(tw.get('retweeted')),
-                created_date=parse(tw.get("created_at")),
+                created_date=created_date,
                 viewed=tw.get('ext_views', {}).get("count") or 0,
                 comments=tw.get('retweet_count') or 0,
                 reposts=tw.get('reply_count') or 0,
