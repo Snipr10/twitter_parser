@@ -46,8 +46,11 @@ def save_d(res_tw, res_us):
         print(parse(tw.get("created_at")), tw.get("id_str"))
         try:
             created_date = parse(tw.get("created_at"))
+            print("FIRST_DATE")
             if created_date < FIRST_DATE:
                 continue
+
+            print("created_date < FIRST_DATE")
             sphinx_id = get_sphinx_id(tw.get("id_str"))
             sphinx_ids.append(sphinx_id)
             Post.objects.create(

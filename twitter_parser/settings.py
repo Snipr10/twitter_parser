@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-from datetime import datetime
+from dateutil.parser import parse
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -185,4 +185,4 @@ LOGGING = {
 BEST_PROXY_KEY = '3f47cf0333045116c1f6ad61fa4faa68'
 rmq_settings = "amqp://post_index:R2ghtt9hebLv@192.168.5.46:5672/post_index"
 
-FIRST_DATE = datetime(2022, 4, 2, 0, 0)
+FIRST_DATE = parse("2/4/2022")
