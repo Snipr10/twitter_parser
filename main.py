@@ -102,7 +102,7 @@ if __name__ == '__main__':
         print(owner.id)
         try:
             owner.owner_sphinx_id = get_sphinx_id(owner.from_id)
-            owner.save()
+            owner.save(update_fields=["owner_sphinx_id"])
         except Exception as e:
             print(e)
         django.db.close_old_connections()
