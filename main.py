@@ -91,21 +91,21 @@ if __name__ == '__main__':
 
     from core import models
 
-
-    print(1)
-    def get_sphinx_id(url):
-        m = hashlib.md5()
-        m.update(str(url).encode())
-        return int(str(int(m.hexdigest(), 16))[:16])
-    print(2)
-    for owner in models.Post.objects.filter(owner_sphinx_id = 1420591320632896):
-        print(owner.id)
-        try:
-            owner.owner_sphinx_id = get_sphinx_id(owner.from_id)
-            owner.save(update_fields=["owner_sphinx_id"])
-        except Exception as e:
-            print(e)
-        django.db.close_old_connections()
+    #
+    # print(1)
+    # def get_sphinx_id(url):
+    #     m = hashlib.md5()
+    #     m.update(str(url).encode())
+    #     return int(str(int(m.hexdigest(), 16))[:16])
+    # print(2)
+    # for owner in models.Post.objects.filter(owner_sphinx_id = 1420591320632896):
+    #     print(owner.id)
+    #     try:
+    #         owner.owner_sphinx_id = get_sphinx_id(owner.from_id)
+    #         owner.save(update_fields=["owner_sphinx_id"])
+    #     except Exception as e:
+    #         print(e)
+    #     django.db.close_old_connections()
 
     #
     # for i in range(1):
