@@ -99,6 +99,7 @@ if __name__ == '__main__':
         m.update(str(url).encode())
         return int(str(int(m.hexdigest(), 16))[:16])
     for owner in models.Post.objects.all():
+        print(owner.id)
         if owner.owner_sphinx_id == 1420591320632896:
            owner.owner_sphinx_id = get_sphinx_id(owner.from_id)
            owner.save()
