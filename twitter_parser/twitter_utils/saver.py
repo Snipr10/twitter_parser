@@ -56,7 +56,7 @@ def save_d(res_tw, res_us):
             Post.objects.create(
                 id=tw.get("id_str"),
                 from_id=tw.get('user_id_str'),
-                owner_sphinx_id=get_sphinx_id(tw.get("user_id")),
+                owner_sphinx_id=get_sphinx_id(tw.get("user_id_str")),
                 content=tw.get("full_text"),
                 repost_of=bool(tw.get('retweeted')),
                 created_date=created_date,
