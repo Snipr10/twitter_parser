@@ -92,12 +92,12 @@ if __name__ == '__main__':
     from core import models
 
 
-
+    print(1)
     def get_sphinx_id(url):
         m = hashlib.md5()
         m.update(str(url).encode())
         return int(str(int(m.hexdigest(), 16))[:16])
-
+    print(2)
     for owner in models.Post.objects.all():
         print(owner.id)
         if owner.owner_sphinx_id == 1420591320632896:
