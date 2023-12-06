@@ -98,12 +98,11 @@ if __name__ == '__main__':
         m.update(str(url).encode())
         return int(str(int(m.hexdigest(), 16))[:16])
     print(2)
-    for owner in models.Post.objects.all():
+    for owner in models.Post.objects.filter(owner_sphinx_id = 1420591320632896):
         print(owner.id)
-        if owner.owner_sphinx_id == 1420591320632896:
-           owner.owner_sphinx_id = get_sphinx_id(owner.from_id)
-           owner.save()
-           django.db.close_old_connections()
+        owner.owner_sphinx_id = get_sphinx_id(owner.from_id)
+        owner.save()
+        django.db.close_old_connections()
 
     #
     # for i in range(1):
