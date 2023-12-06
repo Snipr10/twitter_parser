@@ -100,8 +100,11 @@ if __name__ == '__main__':
     print(2)
     for owner in models.Post.objects.filter(owner_sphinx_id = 1420591320632896):
         print(owner.id)
-        owner.owner_sphinx_id = get_sphinx_id(owner.from_id)
-        owner.save()
+        try:
+            owner.owner_sphinx_id = get_sphinx_id(owner.from_id)
+            owner.save()
+        except Exception as e:
+            print(e)
         django.db.close_old_connections()
 
     #
