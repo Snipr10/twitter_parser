@@ -87,6 +87,12 @@ def get_email_message(username, password):
         imap_server = "imap.gmx.com"
     elif "@rambler"in username:
         imap_server = "imap.rambler.ru"
+    elif "maillsk.com" in username:
+        imap_server = "imap.firstmail.ltd"
+    elif "oonmail.com" in username:
+        imap_server = "imap.firstmail.ltd"
+    elif "znemail.com" in username:
+        imap_server = "imap.firstmail.ltd"
     else:
         imap_server = "outlook.office365.com"
 
