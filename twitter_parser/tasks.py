@@ -121,6 +121,12 @@ def start_parsing_by_source(special_group=False):
                                                           select_sources.values_list('id', flat=True))
                                                       ).order_by(
         'last_modified').first()
+    if sources_item is None:
+        sources_item = models.SourcesItems.objects.filter(network_id=network_id, disabled=0, taken=0,
+                                                      last_modified__isnull=False
+                                                      ).order_by(
+        'last_modified').first()
+
     print(f"sources_item {sources_item}")
 
     if sources_item is not None:
