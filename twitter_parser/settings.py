@@ -92,7 +92,7 @@ DATABASES = {
         # 'USER': 'admin',
         # 'PASSWORD': 'admin',
         #  'HOST': '192.168.0.168',
-        'HOST': '192.168.5.11',
+        'HOST': '192.168.5.27',
 
         'PORT': '3306',
         #       'OPTIONS': {
