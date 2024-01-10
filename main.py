@@ -90,6 +90,7 @@ if __name__ == '__main__':
     from twitter_parser.settings import network_id
 
     from core import models
+    from django.db import connection
 
     #
     # print(1)
@@ -126,7 +127,27 @@ if __name__ == '__main__':
         x.start()
         time.sleep(10)
 
+
+    i = 1
     while True:
+
+        i += 1
+        try:
+            with connection.cursor() as cursor:
+                query = """
+                      UPDATE `prsr_parser_keywords` set `last_modified` = '2000-01-01 00:00:00' WHERE `network_id` = 2 AND `last_modified` = '0000-00-00 00:00:00' AND `disabled` = 0;
+                      """
+                cursor.execute(query)
+        except Exception as e:
+            print(e)
+        try:
+            with connection.cursor() as cursor:
+                query = """
+                      UPDATE `prsr_parser_source_items` set `last_modified` = '2000-01-01 00:00:00' WHERE `network_id` = 2 AND `disabled` = 0 AND `last_modified` = '0000-00-00 00:00:00';
+                      """
+                cursor.execute(query)
+        except Exception as e:
+            print(e)
         try:
             models.Keyword.objects.filter(last_modified__isnull=True).update(last_modified=datetime.date(2000, 1, 1))
             models.Keyword.objects.filter(last_modified__lte=datetime.date(2000, 1, 1)).update(last_modified=datetime.date(2000, 1, 1))
@@ -137,5 +158,18 @@ if __name__ == '__main__':
         #
         except Exception as e:
             print(e)
-        time.sleep(15)
+        try:
+            if i % 10 == 0:
+                try:
+                    models.Keyword.objects.filter(network_id=network_id, taken=1).update(taken=0)
+                except Exception as e:
+                    print(e)
+                try:
+                    models.SourcesItems.objects.filter(network_id=network_id, taken=1).update(taken=0)
+                except Exception as e:
+                    print(e)
+                i = 0
+        except Exception as e:
+            print(e)
+        time.sleep(180)
 
