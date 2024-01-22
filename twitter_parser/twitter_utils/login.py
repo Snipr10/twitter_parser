@@ -1,4 +1,5 @@
 import sys
+import time
 
 from twitter.constants import RED, RESET, GREEN, BOLD, YELLOW
 from twitter.login import init_guest_token, flow_start, flow_instrumentation, flow_username, flow_password, \
@@ -34,8 +35,8 @@ def login(email: str, username: str, password: str, proxy_url:str, **kwargs) -> 
     )
 
     client.protonmail = kwargs.get('protonmail')
-
     client, errors = execute_login_flow(client)
+
     if kwargs.get('debug'):
         if not client or client.cookies.get('flow_errors') == 'true':
             print(f'[{RED}error{RESET}] {BOLD}{username}{RESET} login failed')
@@ -77,6 +78,7 @@ def update_token(client: Client, key: str, url: str, **kwargs) -> tuple[Client, 
     return client, errors
 
 def get_email_message(username, password):
+    time.sleep(3)
     # account credentials
     # use your email provider's IMAP server, you can look for your provider's IMAP server on Google
     # or check this page: https://www.systoolsgroup.com/imap/
@@ -248,6 +250,7 @@ def execute_login_flow(client: Client,  **kwargs) -> tuple[Client | None, list]:
             try:
                 m = get_email_message(client.protonmail['email'], client.protonmail['password'])
                 client, new_errors = confirm_email(client, m)
+                time.sleep(3)
                 errors.extend(new_errors)
             except Exception as e:
                 errors.append(e)
