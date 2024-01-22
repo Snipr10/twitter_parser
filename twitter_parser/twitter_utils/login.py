@@ -93,6 +93,12 @@ def get_email_message(username, password):
         imap_server = "imap.firstmail.ltd"
     elif "znemail.com" in username:
         imap_server = "imap.firstmail.ltd"
+    elif "fmaillerbox" in username:
+        imap_server = "imap.firstmail.ltd"
+    elif "fmailnex" in username:
+        imap_server = "imap.firstmail.ltd"
+    elif "fmailler.com" in username:
+        imap_server = "imap.firstmail.ltd"
     else:
         imap_server = "outlook.office365.com"
 
