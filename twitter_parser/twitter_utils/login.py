@@ -102,7 +102,7 @@ def get_email_message(username, password):
     elif "fmailler.com" in username:
         imap_server = "imap.firstmail.ltd"
     else:
-        imap_server = "outlook.office365.com"
+        imap_server = "imap.firstmail.ltd"
 
     def clean(text):
         # clean text for creating a folder
