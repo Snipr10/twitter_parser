@@ -73,7 +73,7 @@ def search_by_key(username, password, email, email_password, proxy_url, key_word
         # search = Search(email, username, password, save=True, debug=1)
         errors = search.errors
         latest_results = search.run(
-            limit=50,
+            limit=150,
             retries=2,
             queries=[
                 {

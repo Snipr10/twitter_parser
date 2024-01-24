@@ -89,7 +89,9 @@ def start_parsing_by_keyword(special_group=False):
                     account.errors = str(errors)
                     if "login failed" in str(errors):
                         account.is_active += 1
-                    account.save(update_fields=["taken", "errors", "is_active"])
+                    if "cannot unpack non-iterable NoneType object" in str(errors):
+                        account.last_parsing = update_time_timezone(timezone.now()+ datetime.timedelta(hours=12))
+                    account.save(update_fields=["taken", "errors", "is_active", "last_parsing"])
                 except Exception:
                     pass
 
