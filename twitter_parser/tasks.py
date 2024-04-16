@@ -31,12 +31,12 @@ def start_parsing_by_keyword(special_group=False):
     select_sources = models.Sources.objects.filter(
         Q(retro_max__isnull=True) | Q(retro_max__gte=timezone.now()), published=1,
         status=1)
-    print(f"select_sources {select_sources}")
+    print(f"select_sources")
     if not select_sources.exists():
-        print(f"not select_sources special_group {special_group}")
+        print(f"not select_sources special_group")
         return
     key_source = models.KeywordSource.objects.filter(source_id__in=list(select_sources.values_list('id', flat=True)))
-    print(f"key_source {key_source}")
+    print(f"key_source")
 
     key_words = models.Keyword.objects.filter(last_modified__isnull=False).filter(
         last_modified__gte=datetime.date(2000, 1, 1)).filter(network_id=network_id, enabled=1,
@@ -47,7 +47,7 @@ def start_parsing_by_keyword(special_group=False):
     for key_word in key_words:
         if len(key_word.keyword) < 15:
             break
-    print(f"key_word {key_word}")
+    print(f"key_word")
 
     if key_word is not None:
         # print(f"{key_word} special_group {special_group}")
@@ -57,8 +57,15 @@ def start_parsing_by_keyword(special_group=False):
         print("time")
         print(time_)
 
-        if last_update is None or (last_update + datetime.timedelta(minutes=time_) <
-                                   update_time_timezone(timezone.localtime())):
+        next_step = True
+
+        try:
+            next_step = last_update is None or (last_update + datetime.timedelta(minutes=time_) <
+                                   update_time_timezone(timezone.localtime()))
+        except Exception:
+            pass
+        print(f"{next_step=}")
+        if next_step:
             print("key_word")
             django.db.close_old_connections()
             models.Keyword.objects.raw(
