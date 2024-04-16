@@ -43,7 +43,7 @@ def start_parsing_by_keyword(special_group=False):
                                                              taken=0,
                                                              id__in=list(key_source.values_list(
                                                                  'keyword_id', flat=True))
-                                                             ).order_by('last_modified')
+                                                             ).order_by('-last_modified')
     for key_word in key_words:
         if len(key_word.keyword) < 15:
             break
