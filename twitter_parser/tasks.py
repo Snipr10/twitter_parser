@@ -60,6 +60,8 @@ def start_parsing_by_keyword(special_group=False):
         next_step = True
 
         try:
+            print(last_update)
+            print(key_word.id)
             next_step = last_update is None or (last_update + datetime.timedelta(minutes=time_) <
                                    update_time_timezone(timezone.localtime()))
         except Exception:
