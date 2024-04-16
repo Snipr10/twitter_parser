@@ -38,7 +38,7 @@ def start_parsing_by_keyword(special_group=False):
     key_source = models.KeywordSource.objects.filter(source_id__in=list(select_sources.values_list('id', flat=True)))
     print(f"key_source")
 
-    key_words = models.Keyword.objects.filter(last_modified__isnull=False).filter(
+    key_words = models.Keyword.objects.filter(last_modified__isnull=False).filter(last_modified__lte=update_time_timezone(timezone.localtime())).filter(
         last_modified__gte=datetime.date(2000, 1, 1)).filter(network_id=network_id, enabled=1,
                                                              taken=0,
                                                              id__in=list(key_source.values_list(
@@ -48,7 +48,7 @@ def start_parsing_by_keyword(special_group=False):
         if len(key_word.keyword) > 15:
             continue
         print(f"key_word")
-
+    
         if key_word is not None:
             # print(f"{key_word} special_group {special_group}")
             select_source = select_sources.get(id=key_source.filter(keyword_id=key_word.id).first().source_id)
@@ -56,9 +56,9 @@ def start_parsing_by_keyword(special_group=False):
             time_ = select_source.sources
             print("time")
             print(time_)
-
+    
             next_step = True
-
+    
             try:
                 print(last_update)
                 print(key_word.id)
@@ -80,7 +80,7 @@ def start_parsing_by_keyword(special_group=False):
                     account, proxy = get_session()
                     if account:
                         print("search_by_key")
-
+    
                         res_tw, res_us, errors = search_by_key(account.login, account.password, account.email,
                                                        account.email_password, proxy, key_word.keyword)
                         if res_tw is not None:
