@@ -45,64 +45,64 @@ def start_parsing_by_keyword(special_group=False):
                                                                  'keyword_id', flat=True))
                                                              ).order_by('-last_modified')
     for key_word in key_words:
-        if len(key_word.keyword) < 15:
-            break
-    print(f"key_word")
+        if len(key_word.keyword) > 15:
+            continue
+        print(f"key_word")
 
-    if key_word is not None:
-        # print(f"{key_word} special_group {special_group}")
-        select_source = select_sources.get(id=key_source.filter(keyword_id=key_word.id).first().source_id)
-        last_update = key_word.last_modified
-        time_ = select_source.sources
-        print("time")
-        print(time_)
+        if key_word is not None:
+            # print(f"{key_word} special_group {special_group}")
+            select_source = select_sources.get(id=key_source.filter(keyword_id=key_word.id).first().source_id)
+            last_update = key_word.last_modified
+            time_ = select_source.sources
+            print("time")
+            print(time_)
 
-        next_step = True
+            next_step = True
 
-        try:
-            print(last_update)
-            print(key_word.id)
-            next_step = last_update is None or (last_update + datetime.timedelta(minutes=time_) <
-                                   update_time_timezone(timezone.localtime()))
-        except Exception:
-            pass
-        print(f"{next_step=}")
-        if next_step:
-            print("key_word")
-            django.db.close_old_connections()
-            models.Keyword.objects.raw(
-                f"UPDATE `prsr_parser_keywords` SET `taken` = '1' WHERE `prsr_parser_keywords`.`id` = {key_word.id}")
-            # key_word.taken = 1
-            # key_word.save(update_fields=["taken"])
-            errors = []
             try:
-                print("get_session")
-                account, proxy = get_session()
-                if account:
-                    print("search_by_key")
-
-                    res_tw, res_us, errors = search_by_key(account.login, account.password, account.email,
-                                                   account.email_password, proxy, key_word.keyword)
-                    if res_tw is not None:
-                        key_word.last_modified = update_time_timezone(timezone.localtime())
-                        key_word.save(update_fields=["last_modified"])
-                        save_d(res_tw, res_us)
-                else:
-                    raise Exception("can not get_data")
-            finally:
+                print(last_update)
+                print(key_word.id)
+                next_step = last_update is None or (last_update + datetime.timedelta(minutes=time_) <
+                                       update_time_timezone(timezone.localtime()))
+            except Exception:
+                pass
+            print(f"{next_step=}")
+            if next_step:
+                print("key_word")
                 django.db.close_old_connections()
-                key_word.taken = 0
-                key_word.save(update_fields=["taken"])
+                models.Keyword.objects.raw(
+                    f"UPDATE `prsr_parser_keywords` SET `taken` = '1' WHERE `prsr_parser_keywords`.`id` = {key_word.id}")
+                # key_word.taken = 1
+                # key_word.save(update_fields=["taken"])
+                errors = []
                 try:
-                    account.taken = 0
-                    account.errors = str(errors)
-                    if "login failed" in str(errors):
-                        account.is_active += 1
-                    if "cannot unpack non-iterable NoneType object" in str(errors):
-                        account.last_parsing = update_time_timezone(timezone.now()+ datetime.timedelta(hours=12))
-                    account.save(update_fields=["taken", "errors", "is_active", "last_parsing"])
-                except Exception:
-                    pass
+                    print("get_session")
+                    account, proxy = get_session()
+                    if account:
+                        print("search_by_key")
+
+                        res_tw, res_us, errors = search_by_key(account.login, account.password, account.email,
+                                                       account.email_password, proxy, key_word.keyword)
+                        if res_tw is not None:
+                            key_word.last_modified = update_time_timezone(timezone.localtime())
+                            key_word.save(update_fields=["last_modified"])
+                            save_d(res_tw, res_us)
+                    else:
+                        raise Exception("can not get_data")
+                finally:
+                    django.db.close_old_connections()
+                    key_word.taken = 0
+                    key_word.save(update_fields=["taken"])
+                    try:
+                        account.taken = 0
+                        account.errors = str(errors)
+                        if "login failed" in str(errors):
+                            account.is_active += 1
+                        if "cannot unpack non-iterable NoneType object" in str(errors):
+                            account.last_parsing = update_time_timezone(timezone.now()+ datetime.timedelta(hours=12))
+                        account.save(update_fields=["taken", "errors", "is_active", "last_parsing"])
+                    except Exception:
+                        pass
 
 
 #
