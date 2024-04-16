@@ -28,6 +28,8 @@ def start_parsing_by_keyword_while(special_group=False):
     while True:
         try:
             start_parsing_by_keyword(special_group)
+            time.sleep(5 * 60)
+
         except Exception as e:
             print(e)
             time.sleep(5 * 60)
