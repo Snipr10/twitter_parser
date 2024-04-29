@@ -111,9 +111,12 @@ def start_parsing_by_source(special_group=False):
     print("start_parsing_by_source 1")
     django.db.close_old_connections()
 
+    # select_sources = models.Sources.objects.filter(
+    #     Q(retro_max__isnull=True) | Q(retro_max__gte=timezone.now()), published=1,
+    #     status=1)
     select_sources = models.Sources.objects.filter(
-        Q(retro_max__isnull=True) | Q(retro_max__gte=timezone.now()), published=1,
-        status=1)
+        Q(retro_max__isnull=True) | Q(retro_max__gte=timezone.now()),
+    )
     print(2)
     if not select_sources.exists():
         print("not select_sources")
@@ -142,12 +145,8 @@ def start_parsing_by_source(special_group=False):
 
     if sources_item is not None:
         print(sources_item)
-        try:
-            select_source = select_sources.get(id=sources_item.source_id)
-        except Exception:
-            sources_item.disabled = 1
-            sources_item.save()
-            return
+        select_source = select_sources.get(id=sources_item.source_id)
+
         # retro = select_source.retro
         #
         # retro_date = datetime.datetime(retro.year, retro.month, retro.day)
