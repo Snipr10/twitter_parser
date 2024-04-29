@@ -84,7 +84,10 @@ def search_by_source(username, password, email, email_password, proxy_url, sourc
         except Exception:
             user_ids = [scraper.users(source)[0]['data']['user']['result']['rest_id']]
 
-        latest_results = scraper.tweets(user_ids, limit=100)
+        try:
+            latest_results = scraper.tweets(user_ids, limit=100)
+        except Exception:
+            latest_results = scraper.tweets(user_ids)
 
         res_tw = []
         res_us = []

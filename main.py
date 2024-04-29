@@ -123,11 +123,11 @@ if __name__ == '__main__':
         x.start()
         time.sleep(10)
 
-    # for i in range(2):
-    #     print("thread new_process_key " + str(i))
-    #     x = threading.Thread(target=new_process_key, args=(i, ))
-    #     x.start()
-    #     time.sleep(10)
+    for i in range(2):
+        print("thread new_process_key " + str(i))
+        x = threading.Thread(target=new_process_key, args=(i, ))
+        x.start()
+        time.sleep(10)
 
 
     i = 1
