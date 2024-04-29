@@ -20,7 +20,7 @@ class MyScraper(Scraper):
         self.out = Path(kwargs.get('out', 'data'))
         self.guest = False
         self.logger = self._init_logger(**kwargs)
-        self.session, self.errors = self._validate_session(email, username, password, session, proxy_url, **kwargs)
+        self.session, self.errors = self._validate_session(email, username, password, session, proxy_url,  **kwargs)
         self.proxy_url = proxy_url
 
     async def _process(self, operation: tuple, queries: list[dict], **kwargs):
@@ -77,12 +77,12 @@ def search_by_source(username, password, email, email_password, proxy_url, sourc
         # email_password = 'tWi8uz70'
         # email = 'suutjijao@hotmail.com'
 
-        scraper = MyScraper(email, username, password, proxy_url=proxy_url, protonmail={'email': email, 'password': email_password})
+        scraper = MyScraper(email, username, password, proxy_url=proxy_url, protonmail={'email': email, 'password': email_password}, debug=1)
         errors = scraper.errors
         try:
             user_ids = [int(source)]
         except Exception:
-            user_ids = [scraper.users(['kaliningradru'])[0]['data']['user']['result']['rest_id']]
+            user_ids = [scraper.users(source)[0]['data']['user']['result']['rest_id']]
 
         latest_results = scraper.tweets(user_ids, limit=100)
 

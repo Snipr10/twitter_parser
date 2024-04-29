@@ -111,17 +111,17 @@ if __name__ == '__main__':
     #     django.db.close_old_connections()
 
     #
-    # for i in range(1):
-    #     time.sleep(10)
-    #     print("thread new_process_source " + str(i))
-    #     x = threading.Thread(target=new_process_source, args=(i, True,))
-    #     x.start()
-    #
-    # for i in range(2):
-    #     print("thread new_process_source " + str(i))
-    #     x = threading.Thread(target=new_process_source, args=(i, False,))
-    #     x.start()
-    #     time.sleep(10)
+    for i in range(1):
+        time.sleep(10)
+        print("thread new_process_source " + str(i))
+        x = threading.Thread(target=new_process_source, args=(i, True,))
+        x.start()
+
+    for i in range(2):
+        print("thread new_process_source " + str(i))
+        x = threading.Thread(target=new_process_source, args=(i, False,))
+        x.start()
+        time.sleep(10)
 
     for i in range(2):
         print("thread new_process_key " + str(i))
