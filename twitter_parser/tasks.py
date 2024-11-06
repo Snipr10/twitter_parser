@@ -16,7 +16,7 @@ from core import models
 from twitter_parser.settings import network_id, BEST_PROXY_KEY
 from twitter_parser.twitter_utils.parse_by_key import search_by_key
 from twitter_parser.twitter_utils.parse_source import search_by_source
-from twitter_parser.twitter_utils.saver import save_d
+from twitter_parser.twitter_utils.saver import save_d, save_new_flow
 from twitter_parser.twitter_utils.session import get_session
 from twitter_parser.utils.find_data import update_time_timezone
 from twitter_parser.utils.proxy import generate_proxy_session, check_facebook_url
@@ -76,33 +76,32 @@ def start_parsing_by_keyword(special_group=False):
                 # key_word.save(update_fields=["taken"])
                 errors = []
                 try:
-                    print("get_session")
-                    account, proxy = get_session()
-                    if account:
+                    # print("get_session")
+                    # account, proxy = get_session()
+                    # if account:
                         print("search_by_key")
     
-                        res_tw, res_us, errors = search_by_key(account.login, account.password, account.email,
-                                                       account.email_password, proxy, key_word.keyword)
-                        if res_tw is not None:
+                        res = search_by_key(key_word.keyword)
+                        if res is not None:
                             key_word.last_modified = update_time_timezone(timezone.localtime())
                             key_word.save(update_fields=["last_modified"])
-                            save_d(res_tw, res_us)
-                    else:
-                        raise Exception("can not get_data")
+                            save_new_flow(res)
+                    # else:
+                    #     raise Exception("can not get_data")
                 finally:
                     django.db.close_old_connections()
                     key_word.taken = 0
                     key_word.save(update_fields=["taken"])
-                    try:
-                        account.taken = 0
-                        account.errors = str(errors)
-                        if "login failed" in str(errors):
-                            account.is_active += 1
-                        if "cannot unpack non-iterable NoneType object" in str(errors):
-                            account.last_parsing = update_time_timezone(timezone.now()+ datetime.timedelta(hours=12))
-                        account.save(update_fields=["taken", "errors", "is_active", "last_parsing"])
-                    except Exception:
-                        pass
+                    # try:
+                    #     account.taken = 0
+                    #     account.errors = str(errors)
+                    #     if "login failed" in str(errors):
+                    #         account.is_active += 1
+                    #     if "cannot unpack non-iterable NoneType object" in str(errors):
+                    #         account.last_parsing = update_time_timezone(timezone.now()+ datetime.timedelta(hours=12))
+                    #     account.save(update_fields=["taken", "errors", "is_active", "last_parsing"])
+                    # except Exception:
+                    #     pass
 
 
 #

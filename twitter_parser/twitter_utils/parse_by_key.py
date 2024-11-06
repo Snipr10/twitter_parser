@@ -58,47 +58,26 @@ class MySearch(Search):
                         'Please use an authenticated session or remove the `session` argument and try again.')
 
 
-def search_by_key(username, password, email, email_password, proxy_url, key_word):
-    res_tw = None
-    res_us = None
+async def _search_key(key):
+    import asyncio
+    from twscrape import API, gather
+    api = API()
+
+    res = await gather(api.search(key, limit=20))
+    return res
+
+
+def search_by_key(key_word):
+    res = None
     errors = []
     try:
-        # email, username, password = "kemullinax70@hotmail.com", "queleraren39157", "2SmyGTeoRm"
-        # proxy_url = "http://tools-admin_metamap_com:456f634698@193.142.249.56:30001"
-        # email_password = 'Kerrie19701970'
-        # email = 'kemullinax70@hotmail.com'
+        res = asyncio.run(_search_key(key_word))
 
-        search = MySearch(email, username, password, debug=True, proxy_url=proxy_url,
-                          protonmail={'email': email, 'password': email_password})
-        # search = Search(email, username, password, save=True, debug=1)
-        errors = search.errors
-        latest_results = search.run(
-            limit=150,
-            retries=2,
-            queries=[
-                {
-                    'category': 'Latest',
-                    'query': key_word
-                }
-
-            ],
-        )
-        res_tw = []
-        res_us = []
-        for r in latest_results[0]:
-            try:
-                post = r['content']['itemContent']['tweet_results']['result']['legacy']
-                us = [r['content']['itemContent']['tweet_results']['result']['core']['user_results']['result'][
-                          'legacy']]
-                us[0]["id"] = post['user_id_str']
-                res_tw.extend([r['content']['itemContent']['tweet_results']['result']['legacy']])
-                res_us.extend(us)
-            except Exception:
-                pass
     except Exception as e:
         print(e)
         errors.append(e)
-    return res_tw, res_us, errors
+    return res
 
 if __name__ == '__main__':
-    search_by_key(None, None, None, None, None, "беглов")
+    res = search_by_key("беглов")
+

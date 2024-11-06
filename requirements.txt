@@ -15,3 +15,4 @@ sqlparse==0.4.1
 urllib3==1.25.11
 twitter-api-client==0.10.22
 pika==1.2.0
+twscrape==0.14
