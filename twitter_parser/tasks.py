@@ -86,6 +86,7 @@ def start_parsing_by_keyword(special_group=False):
                             key_word.last_modified = update_time_timezone(timezone.localtime())
                             key_word.save(update_fields=["last_modified"])
                             save_new_flow(res)
+                        break
                     # else:
                     #     raise Exception("can not get_data")
                 finally:
