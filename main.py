@@ -28,7 +28,7 @@ def start_parsing_by_keyword_while(special_group=False):
     while True:
         try:
             start_parsing_by_keyword(special_group)
-            time.sleep(5 * 60)
+            time.sleep(15 * 60)
 
         except Exception as e:
             print(e)
@@ -54,9 +54,10 @@ def start_parsing_by_source_while(special_group=False):
     while True:
         try:
             start_parsing_by_source(special_group)
+            time.sleep(10 * 60)
         except Exception as e:
             print(e)
-            time.sleep(5 * 60)
+            time.sleep(10 * 60)
 
 
 def start_parsing_account_source_while():
