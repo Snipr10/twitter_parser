@@ -160,30 +160,23 @@ def start_parsing_by_source(special_group=False):
                                      update_time_timezone(timezone.localtime())):
             try:
                 print("get_session")
-                account, proxy = get_session()
-                if account:
-                    print("search_by_key")
+                # account, proxy = get_session()
+                # if account:
 
-                    res_tw, res_us, errors = search_by_source(account.login, account.password, account.email,
-                                                      account.email_password, proxy, sources_item.data)
+
                     # if res_tw is not None:
-                    sources_item.last_modified = update_time_timezone(timezone.localtime())
-                    sources_item.save(update_fields=["last_modified"])
-                    save_d(res_tw, res_us)
-                else:
-                    raise Exception("can not get_data")
+                res = search_by_source(sources_item.data)
+
+                sources_item.last_modified = update_time_timezone(timezone.localtime())
+                sources_item.save(update_fields=["last_modified"])
+                save_new_flow(res)
+
+
             finally:
                 django.db.close_old_connections()
                 sources_item.taken = 0
                 sources_item.save(update_fields=["taken"])
-                try:
-                    account.taken = 0
-                    account.errors = str(errors)
-                    if "login failed" in str(errors):
-                        account.is_active += 1
-                    account.save(update_fields=["taken", "errors", "is_active"])
-                except Exception:
-                    pass
+
 #
 #
 # def start_first_update_posts():

@@ -67,58 +67,30 @@ class MyScraper(Scraper):
         return session, errors
 
 
-def search_by_source(username, password, email, email_password, proxy_url, source):
-    res_tw = None
-    res_us = None
+async def _search_source(source):
+    import asyncio
+    from twscrape import API, gather
+    api = API()
+    try:
+        user_id = int(source)
+    except Exception:
+        user_id = (await api.user_by_login("noah")).id
+    res = await gather(api.user_tweets(user_id, limit=20))
+    return res
+
+
+def search_by_source(source):
+    res = None
     errors = []
     try:
-        # username, password = "visitant_YTs_", "tWi8uz70"
-        # proxy_url = "http://tools-admin_metamap_com:456f634698@193.142.249.56:30001"
-        # email_password = 'tWi8uz70'
-        # email = 'suutjijao@hotmail.com'
+        res = asyncio.run(_search_source(source))
 
-        scraper = MyScraper(email, username, password, proxy_url=proxy_url, protonmail={'email': email, 'password': email_password}, debug=1)
-        errors = scraper.errors
-        try:
-            user_ids = [int(source)]
-        except Exception:
-            user_ids = [scraper.users(source)[0]['data']['user']['result']['rest_id']]
-
-        try:
-            latest_results = scraper.tweets(user_ids, limit=100)
-        except Exception:
-            latest_results = scraper.tweets(user_ids)
-
-        res_tw = []
-        res_us = []
-        for r in latest_results:
-            try:
-                for tw in r['data']['user']['result']['timeline_v2']['timeline']['instructions'][-1]['entries']:
-                    try:
-                        post_i = tw['content']
-                        if post_i.get("itemContent") is None:
-                            posts = post_i.get("items")
-                        else:
-                            posts = [post_i.get("itemContent")]
-                        for post in posts:
-                            try:
-                                post = post['tweet_results']['result']['legacy']
-                                us = [tw['content']['itemContent']['tweet_results']['result']['core']['user_results']['result']['legacy']]
-                                us[0]["id"] = post['user_id_str']
-                                res_tw.extend([post])
-                                res_us.extend(us)
-                            except Exception as e:
-                                print(e)
-                    except Exception as e:
-                        print(e)
-            except Exception as e:
-                print(e)
     except Exception as e:
         print(e)
         errors.append(e)
+    return res
 
-    return res_tw, res_us, errors
 
 
 if __name__ == '__main__':
-    search_by_source(None, None, None, None, None, "Serhio62472993")
+    search_by_source("Serhio62472993")
