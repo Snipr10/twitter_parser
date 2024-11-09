@@ -56,10 +56,6 @@ def activate_accounts():
 
     for account in Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).exclude(
             proxy_id__isnull=False):
-        print(2)
-        for account in Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).exclude(
-                proxy_id__isnull=False):
-            print(3)
 
 
             try:
@@ -80,6 +76,7 @@ def activate_accounts():
                 except Exception:
                     cookies = None
                 proxy = models.AllProxy.objects.filter(id=account.proxy_id).first()
+                print(4)
 
                 proxy_url = f"http://{proxy.login}:{proxy.proxy_password}@{proxy.ip}:{proxy.port}"
                 usernames = asyncio.run(add_accounts(account.login,
@@ -90,9 +87,9 @@ def activate_accounts():
             except Exception as e:
                 print(e)
                 pass
-        asyncio.run(activate_accounts())
+    asyncio.run(activate_accounts())
 
-        Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).update(views=F('is_active') + 1)
+    Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).update(views=F('is_active') + 1)
 
 
 def new_process_key(i, special_group=False):
