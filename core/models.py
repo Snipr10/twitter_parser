@@ -15,6 +15,7 @@ class Account(models.Model):
     last_parsing = models.DateTimeField(default=now)
     proxy_id = models.CharField(max_length=256)
     errors = models.CharField(max_length=256)
+    auth_data = models.TextField(default='')
 
     class Meta:
         db_table = 'prsr_parser_tw_accounts'
