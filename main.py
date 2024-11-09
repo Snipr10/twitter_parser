@@ -55,9 +55,9 @@ def activate_accounts():
     print(112)
 
     for account in Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).exclude(
-            proxy_id__isnull=False):
+            proxy_id__isnull=True):
 
-
+            print(account)
             try:
                 try:
 
@@ -89,7 +89,7 @@ def activate_accounts():
                 pass
     asyncio.run(async_activate_accounts())
 
-    Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).update(views=F('is_active') + 1)
+    Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).update(is_active=F('is_active') + 1)
 
 
 def new_process_key(i, special_group=False):
