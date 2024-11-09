@@ -60,20 +60,21 @@ def activate_accounts():
         for account in Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).exclude(
                 proxy_id__isnull=False):
             print(3)
-            cookc = base64.b64decode(account.auth_data)
-            cookc = str(cookc)
-            cookc = cookc.replace('\\"', '').replace('\\', '')
-            cookc = cookc[:cookc.rfind("]") + 1]
 
-            cookies = ''
-            for i in range(len(cookc)):
-                try:
-                    cookies = json.loads(cookc[i:])
-                    break
-                except Exception:
-                    pass
 
             try:
+                cookc = base64.b64decode(account.auth_data)
+                cookc = str(cookc)
+                cookc = cookc.replace('\\"', '').replace('\\', '')
+                cookc = cookc[:cookc.rfind("]") + 1]
+
+                cookies = ''
+                for i in range(len(cookc)):
+                    try:
+                        cookies = json.loads(cookc[i:])
+                        break
+                    except Exception:
+                        pass
                 proxy = models.AllProxy.objects.filter(id=account.proxy_id).first()
 
                 proxy_url = f"http://{proxy.login}:{proxy.proxy_password}@{proxy.ip}:{proxy.port}"
