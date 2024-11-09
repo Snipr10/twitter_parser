@@ -5,11 +5,13 @@ import time
 
 import threading
 
-
 import os
 
 import random
 
+from twscrape import API, gather
+
+db_api = API()
 BOT = None
 
 Task = []
@@ -17,9 +19,8 @@ Task = []
 
 def new_process_key(i, special_group=False):
     for i in range(1):
-
         print(f"multiprocessing {i}")
-        x = multiprocessing.Process(target=start_parsing_by_keyword_while, args=(special_group, ))
+        x = multiprocessing.Process(target=start_parsing_by_keyword_while, args=(special_group,))
         x.start()
         time.sleep(random.randint(10, 25))
 
@@ -126,10 +127,9 @@ if __name__ == '__main__':
 
     for i in range(1):
         print("thread new_process_key " + str(i))
-        x = threading.Thread(target=new_process_key, args=(i, ))
+        x = threading.Thread(target=new_process_key, args=(i,))
         x.start()
         time.sleep(10)
-
 
     i = 1
     while True:
@@ -153,7 +153,8 @@ if __name__ == '__main__':
             print(e)
         try:
             models.Keyword.objects.filter(last_modified__isnull=True).update(last_modified=datetime.date(2000, 1, 1))
-            models.Keyword.objects.filter(last_modified__lte=datetime.date(2000, 1, 1)).update(last_modified=datetime.date(2000, 1, 1))
+            models.Keyword.objects.filter(last_modified__lte=datetime.date(2000, 1, 1)).update(
+                last_modified=datetime.date(2000, 1, 1))
 
             print("update Keyword")
             # models.Keyword.objects.raw(
@@ -175,4 +176,3 @@ if __name__ == '__main__':
         except Exception as e:
             print(e)
         time.sleep(180)
-

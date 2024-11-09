@@ -1,4 +1,5 @@
 import asyncio
+from asyncio import gather
 from pathlib import Path
 
 from httpx import AsyncClient
@@ -8,7 +9,7 @@ from twitter.search import Search
 from twitter.util import get_headers
 from httpx import Client
 
-
+from main import db_api
 from twitter_parser.twitter_utils.login import login
 
 
@@ -59,11 +60,8 @@ class MySearch(Search):
 
 
 async def _search_key(key):
-    import asyncio
-    from twscrape import API, gather
-    api = API()
 
-    res = await gather(api.search(key, limit=500))
+    res = await gather(db_api.search(key, limit=500))
     return res
 
 

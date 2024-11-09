@@ -1,4 +1,5 @@
 import asyncio
+from asyncio import gather
 from pathlib import Path
 
 import orjson
@@ -9,6 +10,7 @@ from twitter.scraper import Scraper
 from httpx import Client, Limits, AsyncClient
 from twitter.util import get_headers
 
+from main import db_api
 from twitter_parser.twitter_utils.login import login
 
 
@@ -68,14 +70,11 @@ class MyScraper(Scraper):
 
 
 async def _search_source(source):
-    import asyncio
-    from twscrape import API, gather
-    api = API()
     try:
         user_id = int(source)
     except Exception:
-        user_id = (await api.user_by_login("noah")).id
-    res = await gather(api.user_tweets(user_id, limit=100))
+        user_id = (await db_api.user_by_login(source)).id
+    res = await gather(db_api.user_tweets(user_id, limit=100))
     return res
 
 
