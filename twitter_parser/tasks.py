@@ -38,7 +38,8 @@ def start_parsing_by_keyword(special_group=False):
     key_source = models.KeywordSource.objects.filter(source_id__in=list(select_sources.values_list('id', flat=True)))
     print(f"key_source")
 
-    key_words = models.Keyword.objects.filter(last_modified__isnull=False).filter(last_modified__lte=update_time_timezone(timezone.localtime())).filter(
+    key_words = models.Keyword.objects.filter(last_modified__isnull=False).filter(
+        last_modified__lte=update_time_timezone(timezone.localtime())).filter(
         last_modified__gte=datetime.date(2000, 1, 1)).filter(network_id=network_id, enabled=1,
                                                              taken=0,
                                                              id__in=list(key_source.values_list(
@@ -48,7 +49,7 @@ def start_parsing_by_keyword(special_group=False):
         if len(key_word.keyword) > 15:
             continue
         print(f"key_word")
-    
+
         if key_word is not None:
             # print(f"{key_word} special_group {special_group}")
             select_source = select_sources.get(id=key_source.filter(keyword_id=key_word.id).first().source_id)
@@ -56,14 +57,14 @@ def start_parsing_by_keyword(special_group=False):
             time_ = select_source.sources
             print("time")
             print(time_)
-    
+
             next_step = True
-    
+
             try:
                 print(last_update)
                 print(key_word.id)
                 next_step = last_update is None or (last_update + datetime.timedelta(minutes=time_) <
-                                       update_time_timezone(timezone.localtime()))
+                                                    update_time_timezone(timezone.localtime()))
             except Exception:
                 pass
             print(f"{next_step=}")
@@ -72,40 +73,22 @@ def start_parsing_by_keyword(special_group=False):
                 django.db.close_old_connections()
                 models.Keyword.objects.raw(
                     f"UPDATE `prsr_parser_keywords` SET `taken` = '1' WHERE `prsr_parser_keywords`.`id` = {key_word.id}")
-                # key_word.taken = 1
-                # key_word.save(update_fields=["taken"])
+
                 errors = []
                 try:
-                    # print("get_session")
-                    # account, proxy = get_session()
-                    # if account:
-                        print("search_by_key")
-    
-                        res = search_by_key(key_word.keyword)
-                        if res is not None:
-                            key_word.last_modified = update_time_timezone(timezone.localtime())
-                            key_word.save(update_fields=["last_modified"])
-                            save_new_flow(res)
-                        break
-                    # else:
-                    #     raise Exception("can not get_data")
+
+                    res = search_by_key(key_word.keyword)
+                    if res is not None:
+                        key_word.last_modified = update_time_timezone(timezone.localtime())
+                        key_word.save(update_fields=["last_modified"])
+                        save_new_flow(res)
+                    break
+
                 finally:
                     django.db.close_old_connections()
                     key_word.taken = 0
                     key_word.save(update_fields=["taken"])
-                    # try:
-                    #     account.taken = 0
-                    #     account.errors = str(errors)
-                    #     if "login failed" in str(errors):
-                    #         account.is_active += 1
-                    #     if "cannot unpack non-iterable NoneType object" in str(errors):
-                    #         account.last_parsing = update_time_timezone(timezone.now()+ datetime.timedelta(hours=12))
-                    #     account.save(update_fields=["taken", "errors", "is_active", "last_parsing"])
-                    # except Exception:
-                    #     pass
 
-
-#
 
 def start_parsing_by_source(special_group=False):
     print("start_parsing_by_source 1")
@@ -137,9 +120,9 @@ def start_parsing_by_source(special_group=False):
         'last_modified').first()
     if sources_item is None:
         sources_item = models.SourcesItems.objects.filter(network_id=network_id, disabled=0, taken=0,
-                                                      last_modified__isnull=False
-                                                      ).order_by(
-        'last_modified').first()
+                                                          last_modified__isnull=False
+                                                          ).order_by(
+            'last_modified').first()
 
     print(f"sources_item {sources_item}")
 
@@ -147,9 +130,6 @@ def start_parsing_by_source(special_group=False):
         print(sources_item)
         select_source = select_sources.get(id=sources_item.source_id)
 
-        # retro = select_source.retro
-        #
-        # retro_date = datetime.datetime(retro.year, retro.month, retro.day)
         last_modified = sources_item.last_modified
 
         sources_item.taken = 1
@@ -164,8 +144,7 @@ def start_parsing_by_source(special_group=False):
                 # account, proxy = get_session()
                 # if account:
 
-
-                    # if res_tw is not None:
+                # if res_tw is not None:
                 res = search_by_source(sources_item.data)
 
                 sources_item.last_modified = update_time_timezone(timezone.localtime())

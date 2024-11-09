@@ -75,7 +75,7 @@ async def _search_source(source):
         user_id = int(source)
     except Exception:
         user_id = (await api.user_by_login("noah")).id
-    res = await gather(api.user_tweets(user_id, limit=20))
+    res = await gather(api.user_tweets(user_id, limit=100))
     return res
 
 

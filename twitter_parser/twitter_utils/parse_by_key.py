@@ -63,7 +63,7 @@ async def _search_key(key):
     from twscrape import API, gather
     api = API()
 
-    res = await gather(api.search(key, limit=20))
+    res = await gather(api.search(key, limit=500))
     return res
 
 
