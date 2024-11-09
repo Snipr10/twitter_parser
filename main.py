@@ -45,13 +45,13 @@ async def get_active_accounts():
     return [user.get("username") for user in await db_api.pool.accounts_info()]
 
 
-async def activate_accounts():
+async def async_activate_accounts():
     return [user.get("username") for user in await db_api.pool.accounts_info()]
 
 
 def activate_accounts():
     print(111)
-    usernames = asyncio.run(activate_accounts())
+    usernames = asyncio.run(async_activate_accounts())
     print(112)
 
     for account in Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).exclude(
