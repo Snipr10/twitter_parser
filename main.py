@@ -22,6 +22,10 @@ BOT = None
 Task = []
 
 
+async def delete_inactive():
+    await db_api.pool.delete_inactive()
+
+
 async def add_accounts(login, password, email, email_password, cookies, proxy_url):
     if cookies:
         await db_api.pool.add_account(login,
@@ -50,6 +54,8 @@ async def async_activate_accounts():
 
 
 def activate_accounts():
+    asyncio.run(delete_inactive())
+
     print(111)
     usernames = asyncio.run(get_active_accounts())
     print(112)
