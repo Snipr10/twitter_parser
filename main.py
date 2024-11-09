@@ -46,12 +46,12 @@ async def get_active_accounts():
 
 
 async def async_activate_accounts():
-    return [user.get("username") for user in await db_api.pool.accounts_info()]
+    await db_api.pool.login_all()
 
 
 def activate_accounts():
     print(111)
-    usernames = asyncio.run(async_activate_accounts())
+    usernames = asyncio.run(get_active_accounts())
     print(112)
 
     for account in Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).exclude(
@@ -87,7 +87,7 @@ def activate_accounts():
             except Exception as e:
                 print(e)
                 pass
-    asyncio.run(activate_accounts())
+    asyncio.run(async_activate_accounts())
 
     Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).update(views=F('is_active') + 1)
 
