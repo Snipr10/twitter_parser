@@ -12,6 +12,7 @@ import os
 
 import random
 
+from asgiref.sync import sync_to_async
 from django.db.models import Q, F
 from twscrape import API, gather
 
@@ -23,9 +24,11 @@ Task = []
 
 async def activate():
     await db_api.pool.delete_inactive()
+    print(1)
     usernames = [user.get("username") for user in await db_api.pool.accounts_info()]
-    for account in Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).exclude(proxy_id__isnull=False):
-
+    print(2)
+    for account in sync_to_async(Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).exclude(proxy_id__isnull=False)):
+        print(3)
         cookc = base64.b64decode(account.auth_data)
         cookc = str(cookc)
         cookc = cookc.replace('\\"', '').replace('\\', '')
@@ -168,6 +171,7 @@ if __name__ == '__main__':
     #     django.db.close_old_connections()
 
     #
+    print(5)
     asyncio.run(activate())
 
     for i in range(1):
