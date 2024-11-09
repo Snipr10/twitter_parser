@@ -1,5 +1,8 @@
+import asyncio
+import base64
 import datetime
 import hashlib
+import json
 import multiprocessing
 import time
 
@@ -9,12 +12,62 @@ import os
 
 import random
 
+from django.db.models import Q, F
 from twscrape import API, gather
 
 db_api = API()
 BOT = None
 
 Task = []
+
+
+async def activate():
+    await db_api.pool.delete_inactive()
+    usernames = [user.get("username") for user in await db_api.pool.accounts_info()]
+    for account in Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).exclude(proxy_id__isnull=False):
+
+        cookc = base64.b64decode(account.auth_data)
+        cookc = str(cookc)
+        cookc = cookc.replace('\\"', '').replace('\\', '')
+        cookc = cookc[:cookc.rfind("]") + 1]
+
+        cookies = ''
+        for i in range(len(cookc)):
+            try:
+                cookies = json.loads(cookc[i:])
+                break
+            except Exception:
+                pass
+
+        try:
+            proxy = models.AllProxy.objects.filter(id=account.proxy_id).first()
+
+            proxy_url = f"http://{proxy.login}:{proxy.proxy_password}@{proxy.ip}:{proxy.port}"
+
+            if cookies:
+                await db_api.pool.add_account(account.login,
+                                              account.password,
+                                              account.email,
+                                              account.email_password,
+                                              cookies=str(cookies),
+                                              proxy=proxy_url,
+
+                                              )
+            else:
+                await db_api.pool.add_account(account.login,
+                                              account.password,
+                                              account.email,
+                                              account.email_password,
+                                              proxy=proxy_url,
+                                              )
+        except Exception as e:
+            print(e)
+            pass
+    await db_api.pool.login_all()
+
+    Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).update(views=F('is_active') + 1)
+
+    return
 
 
 def new_process_key(i, special_group=False):
@@ -93,6 +146,8 @@ if __name__ == '__main__':
     from twitter_parser.tasks import start_parsing_by_keyword, start_parsing_by_source
     from twitter_parser.settings import network_id
 
+    from core.models import Account
+
     from core import models
     from django.db import connection
 
@@ -113,6 +168,8 @@ if __name__ == '__main__':
     #     django.db.close_old_connections()
 
     #
+    asyncio.run(activate())
+
     for i in range(1):
         time.sleep(10)
         print("thread new_process_source " + str(i))
@@ -173,6 +230,9 @@ if __name__ == '__main__':
                 except Exception as e:
                     print(e)
                 i = 0
+            if i % 1000 == 0:
+                asyncio.run(activate())
+
         except Exception as e:
             print(e)
         time.sleep(180)
