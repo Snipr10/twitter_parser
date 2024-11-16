@@ -70,10 +70,14 @@ class MyScraper(Scraper):
 
 
 async def _search_source(source):
+    print(2)
+
     try:
         user_id = int(source)
     except Exception:
         user_id = (await db_api.user_by_login(source)).id
+    print(3)
+
     res = await gather(db_api.user_tweets(user_id, limit=100))
     return res
 
@@ -82,6 +86,7 @@ def search_by_source(source):
     res = None
     errors = []
     try:
+        print(1)
         res = asyncio.run(_search_source(source))
 
     except Exception as e:
