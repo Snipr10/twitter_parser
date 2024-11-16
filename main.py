@@ -99,14 +99,7 @@ def activate_accounts():
 
 
 def new_process_key(i, special_group=False):
-    res = asyncio.run(_search_key("key_word"))
-    print(res)
-    for i in range(1):
-        print(f"multiprocessing {i}")
-        x = multiprocessing.Process(target=start_parsing_by_keyword_while, args=(special_group,))
-        x.start()
-        time.sleep(random.randint(10, 25))
-
+    start_parsing_by_keyword_while(special_group)
 
 def start_parsing_by_keyword_while(special_group=False):
     while True:
@@ -219,7 +212,7 @@ if __name__ == '__main__':
     #     x.start()
     #     time.sleep(10)
 
-    for i in range(1):
+    for i in range(14):
         print("thread new_process_key " + str(i))
         x = threading.Thread(target=new_process_key, args=(i,))
         x.start()
