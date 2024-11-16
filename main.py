@@ -151,10 +151,17 @@ def start_parsing_account_source_while():
         except Exception as e:
             print(e)
             time.sleep(5 * 60)
+async def _search_key(key):
+    print("key 1")
+    res = list( await gather(await db_api.search(key, limit=500)))
+    print("key2")
+    return res
+
 
 
 if __name__ == '__main__':
-
+    res = asyncio.run(_search_key("key_word"))
+    print(res)
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'twitter_parser.settings')
     try:
         from django.core.management import execute_from_command_line
