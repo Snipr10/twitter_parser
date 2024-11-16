@@ -78,7 +78,7 @@ async def _search_source(source):
         user_id = (await db_api.user_by_login(source)).id
     print(3)
 
-    res = await gather(db_api.user_tweets(user_id, limit=100))
+    res = await gather(await db_api.user_tweets(user_id, limit=100))
     print(4)
     print(res)
     return res
