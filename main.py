@@ -217,19 +217,19 @@ if __name__ == '__main__':
     print(5)
     activate_accounts()
     #
-    # for i in range(1):
-    #     time.sleep(10)
-    #     print("thread new_process_source " + str(i))
-    #     x = threading.Thread(target=new_process_source, args=(i, True,))
-    #     x.start()
-    #
-    # for i in range(1):
-    #     print("thread new_process_source " + str(i))
-    #     x = threading.Thread(target=new_process_source, args=(i, False,))
-    #     x.start()
-    #     time.sleep(10)
+    for i in range(2):
+        time.sleep(10)
+        print("thread new_process_source " + str(i))
+        x = threading.Thread(target=new_process_source, args=(i, True,))
+        x.start()
 
-    for i in range(14):
+    for i in range(2):
+        print("thread new_process_source " + str(i))
+        x = threading.Thread(target=new_process_source, args=(i, False,))
+        x.start()
+        time.sleep(10)
+
+    for i in range(2):
         print("thread new_process_key " + str(i))
         x = threading.Thread(target=new_process_key, args=(i,))
         x.start()
