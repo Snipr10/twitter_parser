@@ -61,7 +61,7 @@ class MySearch(Search):
 
 async def _search_key(key):
     print("key 1")
-    res = list( await gather(await db_api.search(key, limit=500)))
+    res = list( await gather(db_api.search(key, limit=500)))
     print("key2")
     return res
 
