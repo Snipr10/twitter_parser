@@ -63,44 +63,44 @@ def activate_accounts():
     for account in Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).exclude(
             proxy_id__isnull=True):
 
-            print(account)
+        print(account)
+        try:
             try:
-                try:
 
-                    cookc = base64.b64decode(account.auth_data)
-                    cookc = str(cookc)
-                    cookc = cookc.replace('\\"', '').replace('\\', '')
-                    cookc = cookc[:cookc.rfind("]") + 1]
+                cookc = base64.b64decode(account.auth_data)
+                cookc = str(cookc)
+                cookc = cookc.replace('\\"', '').replace('\\', '')
+                cookc = cookc[:cookc.rfind("]") + 1]
 
-                    cookies = ''
-                    for i in range(len(cookc)):
-                        try:
-                            cookies = json.loads(cookc[i:])
-                            break
-                        except Exception:
-                            pass
-                except Exception:
-                    cookies = None
-                proxy = models.AllProxy.objects.filter(id=account.proxy_id).first()
-                print(4)
+                cookies = ''
+                for i in range(len(cookc)):
+                    try:
+                        cookies = json.loads(cookc[i:])
+                        break
+                    except Exception:
+                        pass
+            except Exception:
+                cookies = None
+            proxy = models.AllProxy.objects.filter(id=account.proxy_id).first()
+            print(4)
 
-                proxy_url = f"http://{proxy.login}:{proxy.proxy_password}@{proxy.ip}:{proxy.port}"
-                usernames = asyncio.run(add_accounts(account.login,
-                                                     account.password,
-                                                     account.email,
-                                                     account.email_password, cookies, proxy_url))
+            proxy_url = f"http://{proxy.login}:{proxy.proxy_password}@{proxy.ip}:{proxy.port}"
+            usernames = asyncio.run(add_accounts(account.login,
+                                                 account.password,
+                                                 account.email,
+                                                 account.email_password, cookies, proxy_url))
 
-            except Exception as e:
-                print(e)
-                pass
+        except Exception as e:
+            print(e)
+            pass
     asyncio.run(async_activate_accounts())
 
     Account.objects.filter(~Q(login__in=usernames)).filter(is_active__lt=20).update(is_active=F('is_active') + 1)
 
 
 def new_process_key(i, special_group=False):
-
     start_parsing_by_keyword_while(special_group)
+
 
 def start_parsing_by_keyword_while(special_group=False):
     while True:
@@ -147,12 +147,28 @@ def start_parsing_account_source_while():
         except Exception as e:
             print(e)
             time.sleep(5 * 60)
+
+
 async def _search_key(key):
     print("key 1")
-    res = list( await gather(db_api.search(key, limit=500)))
+    res = list(await gather(db_api.search(key, limit=500)))
     print("key2")
     return res
 
+
+async def _search_source(source):
+    print(2)
+
+    try:
+        user_id = int(source)
+    except Exception:
+        user_id = (await db_api.user_by_login(source)).id
+    print(3)
+
+    res = await gather(db_api.user_tweets(user_id, limit=100))
+    print(4)
+    print(res)
+    return res
 
 
 if __name__ == '__main__':

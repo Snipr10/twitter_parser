@@ -10,19 +10,20 @@ from twitter.scraper import Scraper
 from httpx import Client, Limits, AsyncClient
 from twitter.util import get_headers
 
-from main import db_api
+from main import _search_source
 from twitter_parser.twitter_utils.login import login
 
 
 class MyScraper(Scraper):
-    def __init__(self, email: str = None, username: str = None, password: str = None, session: Client = None, proxy_url=None, **kwargs):
+    def __init__(self, email: str = None, username: str = None, password: str = None, session: Client = None,
+                 proxy_url=None, **kwargs):
         self.save = kwargs.get('save', True)
         self.debug = kwargs.get('debug', 0)
         self.pbar = kwargs.get('pbar', True)
         self.out = Path(kwargs.get('out', 'data'))
         self.guest = False
         self.logger = self._init_logger(**kwargs)
-        self.session, self.errors = self._validate_session(email, username, password, session, proxy_url,  **kwargs)
+        self.session, self.errors = self._validate_session(email, username, password, session, proxy_url, **kwargs)
         self.proxy_url = proxy_url
 
     async def _process(self, operation: tuple, queries: list[dict], **kwargs):
@@ -30,7 +31,7 @@ class MyScraper(Scraper):
         headers = self.session.headers if self.guest else get_headers(self.session)
         cookies = self.session.cookies
         async with AsyncClient(limits=limits, headers=headers, cookies=cookies, timeout=20,
-                               proxies=self.proxy_url ) as c:
+                               proxies=self.proxy_url) as c:
             tasks = (self._paginate(c, operation, **q, **kwargs) for q in queries)
             if self.pbar:
                 return await tqdm_asyncio.gather(*tasks, desc=operation[-1])
@@ -41,7 +42,7 @@ class MyScraper(Scraper):
         errors = []
         # validate credentials
         if all((email, username, password)):
-            return login(email, username, password, proxy_url,  **kwargs)
+            return login(email, username, password, proxy_url, **kwargs)
 
         # invalid credentials, try validating session
         if session and all(session.cookies.get(c) for c in {'ct0', 'auth_token'}):
@@ -69,21 +70,6 @@ class MyScraper(Scraper):
         return session, errors
 
 
-async def _search_source(source):
-    print(2)
-
-    try:
-        user_id = int(source)
-    except Exception:
-        user_id = (await db_api.user_by_login(source)).id
-    print(3)
-
-    res = await gather(db_api.user_tweets(user_id, limit=100))
-    print(4)
-    print(res)
-    return res
-
-
 def search_by_source(source):
     res = None
     errors = []
@@ -95,7 +81,6 @@ def search_by_source(source):
         print(e)
         errors.append(e)
     return res
-
 
 
 if __name__ == '__main__':
