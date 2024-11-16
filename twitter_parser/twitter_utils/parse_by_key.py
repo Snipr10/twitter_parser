@@ -9,6 +9,7 @@ from twitter.search import Search
 from twitter.util import get_headers
 from httpx import Client
 
+from main import _search_key
 from twitter_parser.twitter_utils.login import login
 
 
@@ -58,13 +59,6 @@ class MySearch(Search):
                         'Please use an authenticated session or remove the `session` argument and try again.')
 
 
-async def _search_key(key):
-    print("key 1")
-    from main import db_api
-
-    res = list( await gather(db_api.search(key, limit=500)))
-    print("key2")
-    return res
 
 
 def search_by_key(key_word):
