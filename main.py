@@ -160,8 +160,7 @@ async def _search_key(key):
 
 
 if __name__ == '__main__':
-    res = asyncio.run(_search_key("key_word"))
-    print(res)
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'twitter_parser.settings')
     try:
         from django.core.management import execute_from_command_line
@@ -205,6 +204,8 @@ if __name__ == '__main__':
     #
     print(5)
     activate_accounts()
+    res = asyncio.run(_search_key("key_word"))
+    print(res)
     for i in range(1):
         time.sleep(10)
         print("thread new_process_source " + str(i))
