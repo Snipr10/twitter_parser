@@ -99,7 +99,8 @@ def activate_accounts():
 
 
 def new_process_key(i, special_group=False):
-
+    res = asyncio.run(_search_key("key_word"))
+    print(res)
     start_parsing_by_keyword_while(special_group)
 
 def start_parsing_by_keyword_while(special_group=False):
