@@ -217,27 +217,38 @@ if __name__ == '__main__':
     print(5)
     activate_accounts()
     #
-    for i in range(2):
-        time.sleep(10)
-        print("thread new_process_source " + str(i))
-        x = threading.Thread(target=new_process_source, args=(i, True,))
-        x.start()
-
-    for i in range(2):
-        print("thread new_process_source " + str(i))
-        x = threading.Thread(target=new_process_source, args=(i, False,))
-        x.start()
-        time.sleep(10)
-
-    for i in range(2):
-        print("thread new_process_key " + str(i))
-        x = threading.Thread(target=new_process_key, args=(i,))
-        x.start()
-        time.sleep(10)
+    # for i in range(2):
+    #     time.sleep(10)
+    #     print("thread new_process_source " + str(i))
+    #     x = threading.Thread(target=new_process_source, args=(i, True,))
+    #     x.start()
+    #
+    # for i in range(2):
+    #     print("thread new_process_source " + str(i))
+    #     x = threading.Thread(target=new_process_source, args=(i, False,))
+    #     x.start()
+    #     time.sleep(10)
+    #
+    # for i in range(2):
+    #     print("thread new_process_key " + str(i))
+    #     x = threading.Thread(target=new_process_key, args=(i,))
+    #     x.start()
+    #     time.sleep(10)
 
     i = 1
     while True:
-
+        try:
+            start_parsing_by_source(False)
+        except Exception as e:
+            print(e)
+        try:
+            start_parsing_by_source(True)
+        except Exception as e:
+            print(e)
+        try:
+            start_parsing_by_keyword(True)
+        except Exception as e:
+            print(e)
         i += 1
         try:
             with connection.cursor() as cursor:
@@ -281,4 +292,4 @@ if __name__ == '__main__':
                 activate_accounts()
         except Exception as e:
             print(e)
-        time.sleep(180)
+        # time.sleep(180)
