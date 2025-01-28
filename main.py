@@ -267,8 +267,10 @@ if __name__ == '__main__':
         except Exception as e:
             print(e)
         try:
-            models.Keyword.objects.filter(last_modified__isnull=True).update(last_modified=datetime.date(2000, 1, 1))
-            models.Keyword.objects.filter(last_modified__lte=datetime.date(2000, 1, 1)).update(
+            models.Keyword.objects.filter(network_id__in=[2, 3, 5, 7, 8, 10], last_modified__isnull=True).update(
+                last_modified=datetime.date(2000, 1, 1))
+            models.Keyword.objects.filter(network_id__in=[2, 3, 5, 7, 8, 10],
+                                          last_modified__lte=datetime.date(2000, 1, 1)).update(
                 last_modified=datetime.date(2000, 1, 1))
 
             print("update Keyword")

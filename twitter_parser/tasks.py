@@ -38,7 +38,8 @@ def start_parsing_by_keyword(special_group=False):
     key_source = models.KeywordSource.objects.filter(source_id__in=list(select_sources.values_list('id', flat=True)))
     print(f"key_source")
 
-    key_words = models.Keyword.objects.filter(last_modified__isnull=False).filter(
+    key_words = models.Keyword.objects.filter(network_id__in=[2, 3, 5, 7, 8, 9, 10],
+                                              last_modified__isnull=False).filter(
         last_modified__lte=update_time_timezone(timezone.localtime())).filter(
         last_modified__gte=datetime.date(2000, 1, 1)).filter(network_id=network_id, enabled=1,
                                                              taken=0,
