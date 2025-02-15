@@ -80,7 +80,7 @@ def save_d(res_tw, res_us):
             print(f"{sphinx_id} added")
 
             rmq_json_data = {
-                "id": sphinx_id,
+                "id": str(sphinx_id),
                 "network_id": 2
             }
             channel.basic_publish(exchange='',
@@ -148,7 +148,7 @@ def save_new_flow(res):
             print(f"{sphinx_id} added")
 
             rmq_json_data = {
-                "id": sphinx_id,
+                "id": str(sphinx_id),
                 "network_id": 2
             }
             channel.basic_publish(exchange='',
